@@ -1,0 +1,61 @@
+# ==========================================
+# VS Code
+# ==========================================
+.vscode/
+*.code-workspace
+.history/
+
+# ==========================================
+# Java / Spring Boot (Maven & Gradle)
+# ==========================================
+# Compilação e binários
+*.class
+target/
+build/
+.gradle/
+out/
+
+# Arquivos de log e empacotamento
+*.log
+*.jar
+*.war
+*.ear
+
+# Configurações de IDEs Java (Eclipse / IntelliJ)
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# ==========================================
+# Node.js / TypeScript / Angular
+# ==========================================
+# Dependências (MUITO IMPORTANTE: nunca suba essa pasta)
+node_modules/
+
+# Arquivos de build do Angular
+dist/
+.angular/
+
+# Logs e diagnósticos do Node/NPM
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Cache de compiladores TypeScript e Angular
+*.tsbuildinfo
+.sass-cache/
+
+# ==========================================
+# Sistema Operacional
+# ==========================================
+.DS_Store
+Thumbs.db
+.env
+/tsconfig.app.json
+/tsconfig.spec.json
+/tsconfig.json
+/package.json
+/angular.json
