@@ -1,7 +1,10 @@
 package br.com.itaipu.grfe.entity;
 
-import jakarta.persistence.Entity;
+import br.com.itaipu.grfe.entity.enums.StatusChamado;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -9,11 +12,27 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Table(name = "chamado")
 public class Chamado {
 
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String nome;
     private String descricao;
-    private Integer chamdostotal;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusChamado status;
+
+    private LocalDateTime dataAbertura;
+    private LocalDateTime dataFechamento;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipe_id")
+    private Equipe equipe;
+
 
 }
