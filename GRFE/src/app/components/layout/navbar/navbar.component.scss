@@ -1,0 +1,80 @@
+.menu-floating-wrapper {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1050;
+}
+
+/* Botão base */
+.btn-dots-animated {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.btn-dots-animated:hover {
+  background-color: rgba(0, 0, 0, 0.08); /* Efeito hover discreto em fundo claro */
+}
+
+/* Estilo das bolinhas do SVG (Cor ajustada para escuro) */
+.dots-icon .dot {
+  fill: #333333; /* Mudado de #ffffff para #333333 para aparecer no fundo branco */
+  transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6),
+              r 0.3s ease,
+              rx 0.3s ease,
+              opacity 0.3s ease;
+  transform-origin: center;
+}
+
+/* Animação: Transforma 3 pontos em Lista */
+.btn-dots-animated.active .dot-top {
+  transform: translateY(2px) scaleX(3.5);
+  r: 1px;
+}
+
+.btn-dots-animated.active .dot-middle {
+  transform: scaleX(3.5);
+  r: 1px;
+}
+
+.btn-dots-animated.active .dot-bottom {
+  transform: translateY(-2px) scaleX(3.5);
+  r: 1px;
+}
+
+/* Menu Dropdown */
+.custom-dropdown-menu {
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 12px;
+  min-width: 250px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  list-style: none;
+  padding: 0.5rem 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.custom-dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Empurra o conteúdo para não ficar sob o botão fixo */
+.page-content {
+  padding-top: 60px;
+  padding-left: 20px;
+}
