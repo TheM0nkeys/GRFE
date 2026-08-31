@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from "../../../../../node_modules/@angular/router/router_module.d-Bx9ArA6K";
-
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { MdbDropdownModule } from 'mdb-angular-ui-kit/dropdown';
 @Component({
   selector: 'app-navbar',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, MdbDropdownModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+    isOpen = false;
 
+    toggleMenu(): void {
+      this.isOpen = !this.isOpen;
+    }
 }

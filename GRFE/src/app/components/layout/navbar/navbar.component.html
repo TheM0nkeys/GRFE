@@ -1,2 +1,43 @@
+<<<<<<< HEAD
 <p>navbar works!</p>
 <router-outlet></router-outlet>
+=======
+<!-- Contêiner flutuante único -->
+<div class="menu-floating-wrapper">
+  
+  <button
+    type="button"
+    class="btn-dots-animated"
+    [class.active]="isOpen"
+    (click)="toggleMenu()"
+    aria-label="Alternar Menu"
+  >
+    <svg class="dots-icon" viewBox="0 0 24 24" width="28" height="28">
+      <circle class="dot dot-top" cx="12" cy="5" r="2" />
+      <circle class="dot dot-middle" cx="12" cy="12" r="2" />
+      <circle class="dot dot-bottom" cx="12" cy="19" r="2" />
+    </svg>
+  </button>
+
+  <ul class="custom-dropdown-menu shadow-5-strong" [class.show]="isOpen">
+    <li><a class="dropdown-item fw-bold" routerLink="/brand">Brand</a></li>
+    <li><hr class="dropdown-divider" /></li>
+    <li><a class="dropdown-item" routerLink="/home">Home</a></li>
+    <li><a class="dropdown-item" routerLink="/link">Link</a></li>
+    <li><a class="dropdown-item disabled" href="#">Disabled</a></li>
+    <li><hr class="dropdown-divider" /></li>
+    <li class="p-2">
+      <div class="input-group">
+        <input type="text" class="form-control form-control-sm" placeholder="Type query" />
+        <button class="btn btn-outline-primary btn-sm" type="button">SEARCH</button>
+      </div>
+    </li>
+  </ul>
+
+</div>
+
+<!-- O conteúdo das rotas fica em um contêiner com margem superior/esquerda para não ficar atrás do botão -->
+<main class="page-content">
+  <router-outlet></router-outlet>
+</main>
+>>>>>>> master
