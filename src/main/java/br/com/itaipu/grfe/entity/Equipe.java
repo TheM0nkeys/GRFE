@@ -28,7 +28,7 @@ public class Equipe {
             inverseJoinColumns = @JoinColumn(name = "setor_id")
     )
 
-    private Set<Setores> setores = new HashSet<>();
+    private Set<Setor> setores = new HashSet<>();
 
     @OneToMany(mappedBy = "equipe")
     private Set<Escala> escalas = new HashSet<>();

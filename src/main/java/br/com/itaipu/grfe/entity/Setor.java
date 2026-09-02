@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Table(name = "setores")
-public class Setores {
+public class Setor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
