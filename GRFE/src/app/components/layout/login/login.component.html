@@ -1,1 +1,66 @@
-<p>login works!</p>
+<section class="vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-5">
+
+        <div class="card shadow-5-strong rounded-5">
+          <div class="card-body p-5">
+
+            <h2 class="fw-bold mb-4 text-center text-primary">GRFE</h2>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+              <!-- Input de E-mail -->
+              <mdb-form-control class="mb-4">
+                <input
+                  mdbInput
+                  type="username"
+                  id="userInput"
+                  class="form-control"
+                  formControlName="username"
+                />
+                <label mdbLabel class="form-label" for="username">Nome de usuario</label>
+              </mdb-form-control>
+
+              <!-- Validação de E-mail -->
+              <div *ngIf="loginForm.get('text')?.touched && loginForm.get('text')?.invalid" class="text-danger small mb-3">
+                <span *ngIf="loginForm.get('text')?.errors?.['required']">O e-mail é obrigatório.</span>
+                <span *ngIf="loginForm.get('text')?.errors?.['text']">Informe um e-mail válido.</span>
+              </div>
+
+              <!-- Input de Senha -->
+              <mdb-form-control class="mb-4">
+                <input
+                  mdbInput
+                  type="password"
+                  id="passwordInput"
+                  class="form-control"
+                  formControlName="password"
+                />
+                <label mdbLabel class="form-label" for="passwordInput">Senha</label>
+              </mdb-form-control>
+
+              <!-- Validação de Senha -->
+              <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="text-danger small mb-3">
+                <span *ngIf="loginForm.get('password')?.errors?.['required']">A senha é obrigatória.</span>
+                <span *ngIf="loginForm.get('password')?.errors?.['minlength']">A senha deve ter pelo menos 6 caracteres.</span>
+              </div>
+
+              <!-- Botão de Envio -->
+              <button
+                type="submit"
+                class="btn btn-primary btn-block mb-4 shadow-2-strong"
+                [disabled]="loginForm.invalid"
+              >
+                Entrar
+              </button>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

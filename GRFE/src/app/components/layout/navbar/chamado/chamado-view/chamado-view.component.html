@@ -1,1 +1,113 @@
-<p>chamado-view works!</p>
+<div class="container-fluid min-vh-100 bg-dark text-white p-4">
+
+  <!-- Header / Cabeçalho -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Acionamentos</h2>
+      <p class="text-muted mb-0">Registro e acompanhamento de acionamentos de sobreaviso</p>
+    </div>
+    <button mdbRipple type="button" class="btn btn-emerald text-dark fw-bold rounded-3">
+      + Novo Acionamento
+    </button>
+  </div>
+
+  <!-- Card de Filtros -->
+  <div class="card bg-surface border-0 mb-4 p-3 rounded-3">
+    <div class="row g-3">
+      <!-- Input Busca -->
+      <div class="col-md-6 col-lg-7">
+        <mdb-form-control>
+          <input
+            mdbInput
+            type="text"
+            id="formSearch"
+            class="form-control form-control-dark"
+            placeholder="Buscar por motivo, incidente, especialidade ou plantonista..."
+          />
+        </mdb-form-control>
+      </div>
+
+      <!-- Select Especialidades -->
+      <div class="col-md-3 col-lg-2">
+        <select class="form-select form-select-dark">
+          <option selected>Todas especialidades</option>
+          <option value="STORAGE">STORAGE</option>
+          <option value="DBA">DBA</option>
+          <option value="INFRA">INFRA</option>
+          <option value="REDES">REDES</option>
+          <option value="SEC">SEC</option>
+          <option value="SAP">SAP</option>
+        </select>
+      </div>
+
+      <!-- Select Status -->
+      <div class="col-md-3 col-lg-3">
+        <select class="form-select form-select-dark">
+          <option selected>Todos status</option>
+          <option value="Aberto">Aberto</option>
+          <option value="Em Andamento">Em Andamento</option>
+          <option value="Concluído">Concluído</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contador -->
+  <p class="text-muted mb-3 fs-7">{{ acionamentos.length }} acionamentos</p>
+
+  <!-- Tabela de Dados -->
+  <div class="card bg-surface border-0 rounded-3 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-dark-custom align-middle mb-0">
+        <thead>
+          <tr class="text-muted text-uppercase fs-7 border-bottom border-secondary">
+            <th scope="col">Data/Hora</th>
+            <th scope="col">Especialidade</th>
+            <th scope="col">Plantonista</th>
+            <th scope="col">Incidente</th>
+            <th scope="col">Motivo</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-end"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of acionamentos">
+            <!-- Data/Hora -->
+            <td class="text-muted text-nowrap fs-7">{{ item.dataHora }}</td>
+
+            <!-- Especialidade -->
+            <td>
+              <span class="badge badge-pill badge-spec badge-spec-{{ item.especialidade | lowercase }}">
+                {{ item.especialidade }}
+              </span>
+            </td>
+
+            <!-- Plantonista -->
+            <td class="fw-bold">{{ item.plantonista }}</td>
+
+            <!-- Incidente -->
+            <td class="text-muted font-monospace fs-7">{{ item.incidente }}</td>
+
+            <!-- Motivo -->
+            <td class="text-truncate text-muted" style="max-width: 350px;">
+              {{ item.motivo }}
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span class="badge badge-status badge-status-{{ getStatusClass(item.status) }}">
+                {{ item.status }}
+              </span>
+            </td>
+
+            <!-- Updates / Ações -->
+            <td class="text-muted text-end text-nowrap fs-7">
+              {{ item.updates }} upd.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

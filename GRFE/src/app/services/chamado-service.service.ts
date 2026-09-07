@@ -1,22 +1,14 @@
-import { Component } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { Acionamento } from '../models/acionamento.model';
 
-interface Acionamento {
-  dataHora: string;
-  especialidade: string;
-  plantonista: string;
-  incidente: string;
-  motivo: string;
-  status: 'Aberto' | 'Em Andamento' | 'Concluído';
-  updates: number;
-}
-
-@Component({
-  selector: 'app-chamado-view',
-  templateUrl: './chamado-view.component.html',
-  styleUrls: ['./chamado-view.component.scss']
+@Injectable({
+  providedIn: 'root'
 })
-export class ChamadoViewComponent {
-  acionamentos: Acionamento[] = [
+export class AcionamentoService {
+
+  // Dados fictícios (mock)
+  private mockAcionamentos: Acionamento[] = [
     {
       dataHora: '31/08, 06:45',
       especialidade: 'STORAGE',
@@ -73,12 +65,10 @@ export class ChamadoViewComponent {
     }
   ];
 
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'Aberto': return 'aberto';
-      case 'Em Andamento': return 'andamento';
-      case 'Concluído': return 'concluido';
-      default: return '';
-    }
+  constructor() { }
+
+  // Retorna um Observable imitando uma chamada assíncrona de API
+  getAcionamentos(): Observable<Acionamento[]> {
+    return of(this.mockAcionamentos);
   }
 }
