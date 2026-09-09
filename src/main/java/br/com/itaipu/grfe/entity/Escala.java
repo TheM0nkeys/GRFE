@@ -20,12 +20,18 @@ public class Escala {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private LocalDate data;
-    private LocalTime horaInicio;
-    private LocalTime horaFim;
+    @Column(nullable = false)
+    private LocalDateTime dataHoraInicio;
+
+    @Column(nullable = false)
+    private LocalDateTime dataHoraFim;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipe_id", nullable = false)
-    private Equipe equipe;
+    @JoinColumn(name = "especialidade_id", nullable = false)
+    private Especialidades especialidade;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "funcionario_id", nullable = false)
+    private Funcionario funcionario;
 
 }
