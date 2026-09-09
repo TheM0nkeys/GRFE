@@ -1,8 +1,48 @@
 package br.com.itaipu.grfe.controller;
 
-import org.springframework.stereotype.Controller;
+import br.com.itaipu.grfe.dto.request.EscalaRequest;
+import br.com.itaipu.grfe.dto.response.EscalaResponse;
+import br.com.itaipu.grfe.service.EscalaService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/escalas")
 public class EscalaController {
 
+    private final EscalaService escalaService;
+
+    public EscalaController(EscalaService escalaService) {
+        this.escalaService = escalaService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EscalaResponse>> listarTodas() {
+        return ResponseEntity.ok(escalaService.listarTodas());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EscalaResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(escalaService.buscarPorId(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<EscalaResponse> criar(@RequestBody @Valid EscalaRequest request) {
+        return ResponseEntity.ok(escalaService.criar(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EscalaResponse> atualizar(@PathVariable Long id,
+                                                    @RequestBody @Valid EscalaRequest request) {
+        return ResponseEntity.ok(escalaService.atualizar(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        escalaService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }
