@@ -44,10 +44,10 @@
 						<td class="ticket-id">{{ chamado.id }}</td>
 						<td class="ticket-title">{{ chamado.titulo }}</td>
 						<td class="muted">{{ chamado.setor }}</td>
-						<td><span class="severity"><i [class]="getSeverityClass(chamado.severidade)"></i>{{ chamado.severidade }}</span></td>
+						<td><span class="severity"><i [class]="getSeriedade(chamado.severidade)"></i>{{ chamado.severidade }}</span></td>
 						<td>{{ chamado.responsavel }}</td>
 						<td class="ticket-date">{{ chamado.data }}</td>
-						<td><span class="status-pill" [class]="getStatusClass(chamado.status)">{{ chamado.status }}</span></td>
+						<td><span class="status-pill" [class]="getStatus(chamado.status)">{{ chamado.status }}</span></td>
 					</tr>
 					<tr *ngIf="!chamadosFiltrados.length"><td colspan="7" class="empty-state">Nenhum incidente encontrado com os filtros atuais.</td></tr>
 				</tbody>

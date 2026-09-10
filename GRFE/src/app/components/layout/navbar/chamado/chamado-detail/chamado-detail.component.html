@@ -6,12 +6,12 @@
 			<h1>{{ modo === 'criar' ? 'Registrar incidente' : item.titulo }}</h1>
 			<p>{{ modo === 'criar' ? 'Preencha os dados para registrar um novo chamado.' : item.setor + ' · Registrado em ' + item.data }}</p>
 		</div>
-		<span *ngIf="modo === 'editar'" class="status-pill" [class]="getStatusClass(item.status)">{{ item.status }}</span>
+		<span *ngIf="modo === 'editar'" class="status-pill" [class]="getStatus(item.status)">{{ item.status }}</span>
 	</header>
 
 	<form class="card form-card" (ngSubmit)="salvar(chamadoForm)" #chamadoForm="ngForm">
 		<div class="card-body">
-			<div class="form-heading"><h2>Informações do chamado</h2><span *ngIf="modo === 'editar'" class="severity"><i [class]="getSeverityClass(item.severidade)"></i>{{ item.severidade }}</span></div>
+			<div class="form-heading"><h2>Informações do chamado</h2><span *ngIf="modo === 'editar'" class="severity"><i [class]="getSeriedade(item.severidade)"></i>{{ item.severidade }}</span></div>
 			<div class="form-grid">
 				<div class="field field-wide"><label for="titulo">Título</label><input id="titulo" name="titulo" class="form-control" [(ngModel)]="item.titulo" required></div>
 				<div class="field"><label for="setor">Setor</label><select id="setor" name="setor" class="form-select" [(ngModel)]="item.setor" required><option *ngFor="let option of setores" [value]="option">{{ option }}</option></select></div>

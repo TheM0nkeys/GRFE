@@ -111,11 +111,11 @@ export class ChamadoDetailComponent {
     };
   }
 
-  getStatusClass(status: string): string {
+  getStatus(status: string): string {
     return status.toLowerCase().replace(' ', '-');
   }
 
-  getSeverityClass(severidade: string): string {
+  getSeriedade(severidade: string): string {
     return severidade.toLowerCase().replace('í', 'i');
   }
 }

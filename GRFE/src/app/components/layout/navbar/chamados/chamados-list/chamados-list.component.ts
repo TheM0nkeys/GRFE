@@ -38,11 +38,11 @@ export class ChamadosListComponent {
     });
   }
 
-  getStatusClass(status: StatusChamado): string {
+  getStatus(status: StatusChamado): string {
     return status.toLowerCase().replace(' ', '-');
   }
 
-  getSeverityClass(severidade: SeveridadeChamado): string {
+  getSeriedade(severidade: SeveridadeChamado): string {
     return severidade.toLowerCase().replace('í', 'i');
   }
 

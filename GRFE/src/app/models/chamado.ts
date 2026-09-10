@@ -22,3 +22,20 @@ export interface Chamado {
 	updates: number;
 	atualizacoes: AtualizacaoChamado[];
 }
+
+export type StatusChamadoApi = 'ABERTO' | 'EM_ANDAMENTO' | 'FECHADO';
+
+export interface ChamadoResponse {
+	id: number;
+	dataHoraAcionamento: string;
+	especialidadeId: number;
+	especialidadeNome: string;
+	plantonistaId: number;
+	plantonistaNome: string;
+	usuarioResponsavelId: number;
+	usuarioResponsavelNome: string;
+	motivo: string;
+	numeroIncidente: string | null;
+	status: StatusChamadoApi;
+}
+
