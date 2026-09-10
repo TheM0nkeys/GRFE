@@ -36,10 +36,11 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      console.log('Dados do formulário:', this.loginForm.value);
+      localStorage.setItem('grfe.usuario.nome', this.loginForm.value.username);
       this.router.navigate(['/navbar/dashboard']);
     } else {
       this.loginForm.markAllAsTouched();
     }
   }
+
 }
