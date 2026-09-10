@@ -1,84 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-
-interface Acionamento {
-  dataHora: string;
-  especialidade: string;
-  plantonista: string;
-  incidente: string;
-  motivo: string;
-  status: 'Aberto' | 'Em Andamento' | 'Concluído';
-  updates: number;
-}
+import { RouterOutlet } from '@angular/router';
+import { ChamadoService } from '../../../../../services/chamado-service.service';
+import { Chamado } from '../../../../../models/chamado';
 
 @Component({
   selector: 'app-chamado-view',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet],
   templateUrl: './chamado-view.component.html',
   styleUrls: ['./chamado-view.component.scss']
 })
 export class ChamadoViewComponent {
-  acionamentos: Acionamento[] = [
-    {
-      dataHora: '31/08, 06:45',
-      especialidade: 'STORAGE',
-      plantonista: 'Roberto Silva',
-      incidente: 'INC0047835',
-      motivo: 'Backup noturno do ambiente de produção não c...',
-      status: 'Aberto',
-      updates: 0
-    },
-    {
-      dataHora: '31/08, 02:15',
-      especialidade: 'DBA',
-      plantonista: 'Carlos Eduardo',
-      incidente: 'INC0047821',
-      motivo: 'Lentidão crítica no banco de dados Oracle PROD...',
-      status: 'Em Andamento',
-      updates: 3
-    },
-    {
-      dataHora: '30/08, 23:47',
-      especialidade: 'INFRA',
-      plantonista: 'Roberto Silva',
-      incidente: 'INC0047810',
-      motivo: 'Servidor de aplicação APP-PRD-07 com consum...',
-      status: 'Concluído',
-      updates: 3
-    },
-    {
-      dataHora: '30/08, 18:33',
-      especialidade: 'REDES',
-      plantonista: 'Fernando Alves',
-      incidente: 'INC0047798',
-      motivo: 'Queda de link MPLS para subestação SE-17. Equi...',
-      status: 'Concluído',
-      updates: 3
-    },
-    {
-      dataHora: '29/08, 14:20',
-      especialidade: 'SEC',
-      plantonista: 'Diego Carvalho',
-      incidente: 'INC0047750',
-      motivo: 'Bloqueio inesperado de tráfego legítimo no firew...',
-      status: 'Concluído',
-      updates: 2
-    },
-    {
-      dataHora: '28/08, 08:10',
-      especialidade: 'SAP',
-      plantonista: 'Thiago Nascimento',
-      incidente: 'INC0047720',
-      motivo: 'Falha na execução do job de fechamento mensal...',
-      status: 'Concluído',
-      updates: 2
-    }
-  ];
+  chamados: Chamado[] = [];
+
+  constructor(private readonly chamadoService: ChamadoService) {
+    this.chamadoService.obterChamados().subscribe((chamados) => this.chamados = chamados);
+  }
+
+  get total(): number { return this.chamados.length; }
+  get abertos(): number { return this.chamados.filter((chamado) => chamado.status === 'Aberto').length; }
+  get andamento(): number { return this.chamados.filter((chamado) => chamado.status === 'Em andamento').length; }
+  get resolvidos(): number { return this.chamados.filter((chamado) => chamado.status === 'Resolvido').length; }
+  get criticos(): number { return this.chamados.filter((chamado) => chamado.severidade === 'Crítica').length; }
 
   getStatusClass(status: string): string {
-    switch (status) {
-      case 'Aberto': return 'aberto';
-      case 'Em Andamento': return 'andamento';
-      case 'Concluído': return 'concluido';
-      default: return '';
-    }
+    return status.toLowerCase().replace(' ', '-');
   }
+
 }

@@ -16,18 +16,14 @@
   </button>
 
   <ul class="custom-dropdown-menu shadow-5-strong" [class.show]="isOpen">
-    <li><a class="dropdown-item fw-bold" routerLink="/brand">Brand</a></li>
+    <li><a class="dropdown-item fw-bold" routerLink="/navbar/dashboard">GRFE</a></li>
     <li><hr class="dropdown-divider" /></li>
-    <li><a class="dropdown-item" routerLink="/home">Home</a></li>
-    <li><a class="dropdown-item" routerLink="/link">Link</a></li>
-    <li><a class="dropdown-item disabled" href="#">Disabled</a></li>
+    <li><a class="dropdown-item" routerLink="/navbar/dashboard">Dashboard</a></li>
+    <li><a class="dropdown-item" routerLink="/navbar/chamados">Chamados</a></li>
+    <li><a class="dropdown-item " routerLink="/navbar/relatorios">Relatorios</a></li>
+    <li><a class="dropdown-item " routerLink="/navbar/users">Usuarios</a></li>
+
     <li><hr class="dropdown-divider" /></li>
-    <li class="p-2">
-      <div class="input-group">
-        <input type="text" class="form-control form-control-sm" placeholder="Type query" />
-        <button class="btn btn-outline-primary btn-sm" type="button">SEARCH</button>
-      </div>
-    </li>
   </ul>
 
 </div>

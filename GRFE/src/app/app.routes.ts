@@ -4,7 +4,10 @@ import { NavbarComponent } from './components/layout/navbar/navbar.component';
 import { DashGeralComponent} from './components/layout/navbar/dash-geral/dash-geral.component';
 import { UserListComponent } from './components/layout/navbar/admin/user-list/user-list.component';
 import { ChamadosListComponent } from './components/layout/navbar/chamados/chamados-list/chamados-list.component';
+import { ChamadoViewComponent } from './components/layout/navbar/chamado/chamado-view/chamado-view.component';
+import { ChamadoDetailComponent } from './components/layout/navbar/chamado/chamado-detail/chamado-detail.component';
 import { RelatoriosComponent } from './components/layout/navbar/relatorios/relatorios/relatorios.component';
+import { RelatoriosChartsComponent } from './components/layout/navbar/relatorios/relatorios-charts/relatorios-charts.component';
 //falta terminar o roteamento
 //e depois de fazer o roteamento, fazer o routeGuard
 export const routes: Routes = [
@@ -13,8 +16,14 @@ export const routes: Routes = [
   {path: 'navbar', component: NavbarComponent/*, canActivate: [roleGuard]*/, children: [
       {path: 'dashboard', component: DashGeralComponent},
       {path: 'users', component: UserListComponent},
-      {path: 'chamados', component: ChamadosListComponent},
-      {path: 'relatorios', component: RelatoriosComponent}
+      {path: 'chamados', component: ChamadoViewComponent, children: [
+        {path: '', component: ChamadosListComponent},
+        {path: 'novo', component: ChamadoDetailComponent},
+        {path: ':id', component: ChamadoDetailComponent}
+      ]},
+      {path: 'relatorios', component: RelatoriosComponent, children: [
+        {path: '', component: RelatoriosChartsComponent}
+      ]}
     ]
   }
 ];
