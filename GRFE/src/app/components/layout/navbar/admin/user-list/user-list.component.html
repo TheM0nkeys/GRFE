@@ -1,1 +1,244 @@
-<p>user-list works!</p>
+<div class="container-fluid py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h2 class="fw-bold mb-1">Administração</h2>
+      <p class="text-muted mb-0">
+        Gerenciamento de usuários e permissões
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      mdbRipple
+      (click)="novoUsuario()">
+      + Novo Usuário
+    </button>
+
+  </div>
+
+  <div class="card mb-4" *ngIf="formularioAberto">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">
+          {{ usuarioEmEdicao ? 'Editar usuário' : 'Novo usuário' }}
+        </h4>
+        <button
+          type="button"
+          class="btn btn-link text-secondary"
+          (click)="cancelarFormulario()">
+          Cancelar
+        </button>
+      </div>
+
+      <form [formGroup]="formularioUsuario" (ngSubmit)="salvarUsuario()" novalidate>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="nomeUsuario">Nome</label>
+            <input id="nomeUsuario" class="form-control" type="text" formControlName="nome">
+            <small class="text-danger" *ngIf="formularioUsuario.controls.nome.touched && formularioUsuario.controls.nome.invalid">
+              Informe um nome com pelo menos 3 caracteres.
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="emailUsuario">E-mail</label>
+            <input id="emailUsuario" class="form-control" type="email" formControlName="email">
+            <small class="text-danger" *ngIf="formularioUsuario.controls.email.touched && formularioUsuario.controls.email.invalid">
+              Informe um e-mail válido.
+            </small>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label" for="perfilUsuario">Perfil</label>
+            <select id="perfilUsuario" class="form-select" formControlName="perfil">
+              <option value="Usuário">Usuário</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label" for="equipeUsuario">Equipe</label>
+            <input id="equipeUsuario" class="form-control" type="text" formControlName="equipe">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="setorUsuario">Setor</label>
+            <input id="setorUsuario" class="form-control" type="text" formControlName="setor">
+          </div>
+
+          <div class="col-12 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelarFormulario()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary" mdbRipple>
+              {{ usuarioEmEdicao ? 'Salvar alterações' : 'Adicionar usuário' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+
+          <p class="text-muted text-uppercase small mb-2">
+            Total de usuários
+          </p>
+
+          <h3 class="fw-bold mb-0">
+            {{ usuarios.length }}
+          </h3>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+
+          <p class="text-muted text-uppercase small mb-2">
+            Administradores
+          </p>
+
+          <h3 class="fw-bold mb-0">
+            {{ quantidadeAdministradores }}
+          </h3>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+
+          <p class="text-muted text-uppercase small mb-2">
+            Usuários
+          </p>
+
+          <h3 class="fw-bold mb-0">
+            {{ quantidadeUsuarios }}
+          </h3>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="card-body p-0">
+
+      <div class="table-responsive">
+
+        <table class="table table-hover mb-0 align-middle">
+
+          <thead class="table-light">
+
+            <tr>
+              <th scope="col">COLABORADOR</th>
+              <th scope="col">E-MAIL</th>
+              <th scope="col">PERFIL</th>
+              <th scope="col">EQUIPE</th>
+              <th scope="col">SETOR</th>
+              <th scope="col">AÇÕES</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let usuario of usuarios">
+
+              <td>
+
+                <div class="d-flex align-items-center">
+
+                  <div
+                    class="rounded-circle bg-success text-white d-flex justify-content-center align-items-center me-3"
+                    style="width: 36px; height: 36px;">
+                    <span class="fw-bold">
+                      {{ usuario.iniciais }}
+                    </span>
+                  </div>
+
+                  <span class="fw-semibold">
+                    {{ usuario.nome }}
+                  </span>
+
+                </div>
+
+              </td>
+
+              <td class="text-muted">
+                {{ usuario.email }}
+              </td>
+
+              <td>
+
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-primary': usuario.perfil === 'Administrador',
+                    'bg-success': usuario.perfil === 'Usuário'
+                  }">
+                  {{ usuario.perfil }}
+                </span>
+
+              </td>
+
+              <td>
+                {{ usuario.equipe }}
+              </td>
+
+              <td class="text-muted">
+                {{ usuario.setor }}
+              </td>
+
+              <td>
+
+                <div class="d-flex gap-2">
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    mdbRipple
+                    (click)="editarUsuario(usuario)">
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    mdbRipple
+                    [disabled]="usuario.perfil === 'Administrador'"
+                    (click)="removerUsuario(usuario)">
+                    Remover
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
