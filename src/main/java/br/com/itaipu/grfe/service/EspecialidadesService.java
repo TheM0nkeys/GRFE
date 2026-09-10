@@ -9,10 +9,12 @@ import br.com.itaipu.grfe.repository.DepartamentoRepository;
 import br.com.itaipu.grfe.repository.DivisaoRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class EspecialidadesService {
 
     private final EspecialidadesRepository especialidadesRepository;
@@ -38,12 +40,14 @@ public class EspecialidadesService {
         return EspecialidadeResponse.fromEntity(buscarEntidadePorId(id));
     }
 
+    @Transactional
     public EspecialidadeResponse criar(EspecialidadesRequest request) {
         Especialidades especialidade = request.toEntity();
         vincularDivisaoEDepartamento(especialidade, request);
         return EspecialidadeResponse.fromEntity(especialidadesRepository.save(especialidade));
     }
 
+    @Transactional
     public EspecialidadeResponse atualizar(Long id, EspecialidadesRequest request) {
         Especialidades especialidade = buscarEntidadePorId(id);
         especialidade.setNome(request.nome());
@@ -52,6 +56,7 @@ public class EspecialidadesService {
         return EspecialidadeResponse.fromEntity(especialidadesRepository.save(especialidade));
     }
 
+    @Transactional
     public void deletar(Long id) {
         if (!especialidadesRepository.existsById(id)) {
             throw new IllegalArgumentException("Especialidade não encontrada: " + id);
@@ -70,6 +75,12 @@ public class EspecialidadesService {
 
         Departamento departamento = departamentoRepository.findById(request.departamentoId())
                 .orElseThrow(() -> new IllegalArgumentException("Departamento não encontrado: " + request.departamentoId()));
+
+        if (!departamento.getDivisao().getId().equals(divisao.getId())) {
+            throw new IllegalArgumentException(
+                    "O departamento informado (" + departamento.getNome() +
+                            ") não pertence à divisão informada (" + divisao.getNome() + ")");
+        }
 
         especialidade.setDivisao(divisao);
         especialidade.setDepartamento(departamento);

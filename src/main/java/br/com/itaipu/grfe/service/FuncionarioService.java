@@ -7,12 +7,14 @@ import br.com.itaipu.grfe.entity.Funcionario;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 public class FuncionarioService {
 
     private final FuncionarioRepository funcionarioRepository;
@@ -35,12 +37,14 @@ public class FuncionarioService {
         return FuncionarioResponse.fromEntity(buscarEntidadePorId(id));
     }
 
+    @Transactional
     public FuncionarioResponse criar(FuncionarioRequest request) {
         Funcionario funcionario = request.toEntity();
         funcionario.setEspecialidades(buscarEspecialidades(request.especialidadeIds()));
         return FuncionarioResponse.fromEntity(funcionarioRepository.save(funcionario));
     }
 
+    @Transactional
     public FuncionarioResponse atualizar(Long id, FuncionarioRequest request) {
         Funcionario funcionario = buscarEntidadePorId(id);
         funcionario.setNome(request.nome());
@@ -50,6 +54,7 @@ public class FuncionarioService {
         return FuncionarioResponse.fromEntity(funcionarioRepository.save(funcionario));
     }
 
+    @Transactional
     public void deletar(Long id) {
         if (!funcionarioRepository.existsById(id)) {
             throw new IllegalArgumentException("Funcionário não encontrado: " + id);

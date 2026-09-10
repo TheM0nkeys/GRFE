@@ -5,10 +5,12 @@ import br.com.itaipu.grfe.dto.response.DivisaoResponse;
 import br.com.itaipu.grfe.entity.Divisao;
 import br.com.itaipu.grfe.repository.DivisaoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class DivisaoService {
 
     private final DivisaoRepository divisaoRepository;
@@ -29,17 +31,20 @@ public class DivisaoService {
         return DivisaoResponse.fromEntity(divisao);
     }
 
+    @Transactional
     public DivisaoResponse criar(DivisaoRequest request) {
         Divisao divisao = request.toEntity();
         return DivisaoResponse.fromEntity(divisaoRepository.save(divisao));
     }
 
+    @Transactional
     public DivisaoResponse atualizar(Long id, DivisaoRequest request) {
         Divisao divisao = buscarEntidadePorId(id);
         divisao.setNome(request.nome());
         return DivisaoResponse.fromEntity(divisaoRepository.save(divisao));
     }
 
+    @Transactional
     public void deletar(Long id) {
         if (!divisaoRepository.existsById(id)) {
             throw new IllegalArgumentException("Divisão não encontrada: " + id);

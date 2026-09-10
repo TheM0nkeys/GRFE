@@ -9,11 +9,13 @@ import br.com.itaipu.grfe.repository.ChamadoRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
 import br.com.itaipu.grfe.repository.HistoricoAcionamentoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class HistoricoAcionamentoService {
 
     private final HistoricoAcionamentoRepository historicoAcionamentoRepository;
@@ -37,6 +39,7 @@ public class HistoricoAcionamentoService {
                 .toList();
     }
 
+    @Transactional
     public HistoricoAcionamentoResponse registrar(Long chamadoId, HistoricoAcionamentoRequest request) {
         Chamado chamado = buscarChamado(chamadoId);
 
@@ -47,7 +50,10 @@ public class HistoricoAcionamentoService {
         historico.setAutor(autor);
         historico.setChamado(chamado);
 
-        return HistoricoAcionamentoResponse.fromEntity(historicoAcionamentoRepository.save(historico));
+        HistoricoAcionamento salvo = historicoAcionamentoRepository.save(historico);
+        chamado.getHistorico().add(salvo);
+
+        return HistoricoAcionamentoResponse.fromEntity(salvo);
     }
 
     private Chamado buscarChamado(Long chamadoId) {

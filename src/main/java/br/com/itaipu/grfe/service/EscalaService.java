@@ -9,10 +9,12 @@ import br.com.itaipu.grfe.repository.EscalaRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class EscalaService {
 
     private final EscalaRepository escalaRepository;
@@ -38,12 +40,14 @@ public class EscalaService {
         return EscalaResponse.fromEntity(buscarEntidadePorId(id));
     }
 
+    @Transactional
     public EscalaResponse criar(EscalaRequest request) {
         Escala escala = request.toEntity();
         vincularEspecialidadeEFuncionario(escala, request);
         return EscalaResponse.fromEntity(escalaRepository.save(escala));
     }
 
+    @Transactional
     public EscalaResponse atualizar(Long id, EscalaRequest request) {
         Escala escala = buscarEntidadePorId(id);
         escala.setDataHoraInicio(request.dataHoraInicio());
@@ -52,6 +56,7 @@ public class EscalaService {
         return EscalaResponse.fromEntity(escalaRepository.save(escala));
     }
 
+    @Transactional
     public void deletar(Long id) {
         if (!escalaRepository.existsById(id)) {
             throw new IllegalArgumentException("Escala não encontrada: " + id);

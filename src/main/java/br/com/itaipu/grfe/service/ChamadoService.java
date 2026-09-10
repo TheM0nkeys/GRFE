@@ -9,10 +9,12 @@ import br.com.itaipu.grfe.repository.ChamadoRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ChamadoService {
 
     private final ChamadoRepository chamadoRepository;
@@ -38,12 +40,14 @@ public class ChamadoService {
         return ChamadoResponse.fromEntity(buscarEntidadePorId(id));
     }
 
+    @Transactional
     public ChamadoResponse criar(ChamadoRequest request) {
         Chamado chamado = request.toEntity();
         vincularRelacoes(chamado, request);
         return ChamadoResponse.fromEntity(chamadoRepository.save(chamado));
     }
 
+    @Transactional
     public ChamadoResponse atualizar(Long id, ChamadoRequest request) {
         Chamado chamado = buscarEntidadePorId(id);
         chamado.setDataHoraAcionamento(request.dataHoraAcionamento());
@@ -54,6 +58,7 @@ public class ChamadoService {
         return ChamadoResponse.fromEntity(chamadoRepository.save(chamado));
     }
 
+    @Transactional
     public void deletar(Long id) {
         if (!chamadoRepository.existsById(id)) {
             throw new IllegalArgumentException("Acionamento não encontrado: " + id);

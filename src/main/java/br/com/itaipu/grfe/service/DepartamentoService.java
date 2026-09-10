@@ -7,10 +7,12 @@ import br.com.itaipu.grfe.entity.Divisao;
 import br.com.itaipu.grfe.repository.DepartamentoRepository;
 import br.com.itaipu.grfe.repository.DivisaoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
@@ -33,12 +35,14 @@ public class DepartamentoService {
         return DepartamentoResponse.fromEntity(buscarEntidadePorId(id));
     }
 
+    @Transactional
     public DepartamentoResponse criar(DepartamentoRequest request) {
         Departamento departamento = request.toEntity();
         departamento.setDivisao(buscarDivisao(request.divisaoId()));
         return DepartamentoResponse.fromEntity(departamentoRepository.save(departamento));
     }
 
+    @Transactional
     public DepartamentoResponse atualizar(Long id, DepartamentoRequest request) {
         Departamento departamento = buscarEntidadePorId(id);
         departamento.setNome(request.nome());
@@ -46,6 +50,7 @@ public class DepartamentoService {
         return DepartamentoResponse.fromEntity(departamentoRepository.save(departamento));
     }
 
+    @Transactional
     public void deletar(Long id) {
         if (!departamentoRepository.existsById(id)) {
             throw new IllegalArgumentException("Departamento não encontrado: " + id);
