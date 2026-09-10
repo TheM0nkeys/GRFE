@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.container-fluid {
+  min-height: 100%;
+}
+
+h2 {
+  color: #1f2937;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+.table {
+  th {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    white-space: nowrap;
+  }
+
+  td {
+    font-size: 14px;
+  }
+}
+
+.badge {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 6px;
+}
+
+.text-danger {
+  display: block;
+  margin-top: 4px;
+}
