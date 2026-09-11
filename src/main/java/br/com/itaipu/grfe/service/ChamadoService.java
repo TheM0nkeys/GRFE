@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.ChamadoResponse;
 import br.com.itaipu.grfe.entity.Chamado;
 import br.com.itaipu.grfe.entity.Especialidades;
 import br.com.itaipu.grfe.entity.Funcionario;
+import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.ChamadoRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
@@ -61,25 +62,25 @@ public class ChamadoService {
     @Transactional
     public void deletar(Long id) {
         if (!chamadoRepository.existsById(id)) {
-            throw new IllegalArgumentException("Acionamento não encontrado: " + id);
+            throw new EntidadeNaoEncontradaException("Acionamento não encontrado: " + id);
         }
         chamadoRepository.deleteById(id);
     }
 
     private Chamado buscarEntidadePorId(Long id) {
         return chamadoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Acionamento não encontrado: " + id));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Acionamento não encontrado: " + id));
     }
 
     private void vincularRelacoes(Chamado chamado, ChamadoRequest request) {
         Especialidades especialidade = especialidadesRepository.findById(request.especialidadeId())
-                .orElseThrow(() -> new IllegalArgumentException("Especialidade não encontrada: " + request.especialidadeId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Especialidade não encontrada: " + request.especialidadeId()));
 
         Funcionario plantonista = funcionarioRepository.findById(request.plantonistaId())
-                .orElseThrow(() -> new IllegalArgumentException("Plantonista não encontrado: " + request.plantonistaId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Plantonista não encontrado: " + request.plantonistaId()));
 
         Funcionario usuarioResponsavel = funcionarioRepository.findById(request.usuarioResponsavelId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário responsável não encontrado: " + request.usuarioResponsavelId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário responsável não encontrado: " + request.usuarioResponsavelId()));
 
         chamado.setEspecialidade(especialidade);
         chamado.setPlantonista(plantonista);

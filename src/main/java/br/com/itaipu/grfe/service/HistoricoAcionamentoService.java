@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.HistoricoAcionamentoResponse;
 import br.com.itaipu.grfe.entity.Chamado;
 import br.com.itaipu.grfe.entity.Funcionario;
 import br.com.itaipu.grfe.entity.HistoricoAcionamento;
+import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.ChamadoRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
 import br.com.itaipu.grfe.repository.HistoricoAcionamentoRepository;
@@ -44,7 +45,7 @@ public class HistoricoAcionamentoService {
         Chamado chamado = buscarChamado(chamadoId);
 
         Funcionario autor = funcionarioRepository.findById(request.autorId())
-                .orElseThrow(() -> new IllegalArgumentException("Autor não encontrado: " + request.autorId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Autor não encontrado: " + request.autorId()));
 
         HistoricoAcionamento historico = request.toEntity();
         historico.setAutor(autor);
@@ -58,6 +59,6 @@ public class HistoricoAcionamentoService {
 
     private Chamado buscarChamado(Long chamadoId) {
         return chamadoRepository.findById(chamadoId)
-                .orElseThrow(() -> new IllegalArgumentException("Acionamento não encontrado: " + chamadoId));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Acionamento não encontrado: " + chamadoId));
     }
 }

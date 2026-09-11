@@ -13,6 +13,12 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ResponseEntity<ErroResponse> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex) {
+        ErroResponse erro = ErroResponse.of(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErroResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
         ErroResponse erro = ErroResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage());

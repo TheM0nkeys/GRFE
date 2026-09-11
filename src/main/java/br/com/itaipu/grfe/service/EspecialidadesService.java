@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.EspecialidadeResponse;
 import br.com.itaipu.grfe.entity.Departamento;
 import br.com.itaipu.grfe.entity.Divisao;
 import br.com.itaipu.grfe.entity.Especialidades;
+import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.DepartamentoRepository;
 import br.com.itaipu.grfe.repository.DivisaoRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
@@ -59,22 +60,22 @@ public class EspecialidadesService {
     @Transactional
     public void deletar(Long id) {
         if (!especialidadesRepository.existsById(id)) {
-            throw new IllegalArgumentException("Especialidade não encontrada: " + id);
+            throw new EntidadeNaoEncontradaException("Especialidade não encontrada: " + id);
         }
         especialidadesRepository.deleteById(id);
     }
 
     private Especialidades buscarEntidadePorId(Long id) {
         return especialidadesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Especialidade não encontrada: " + id));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Especialidade não encontrada: " + id));
     }
 
     private void vincularDivisaoEDepartamento(Especialidades especialidade, EspecialidadesRequest request) {
         Divisao divisao = divisaoRepository.findById(request.divisaoId())
-                .orElseThrow(() -> new IllegalArgumentException("Divisão não encontrada: " + request.divisaoId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Divisão não encontrada: " + request.divisaoId()));
 
         Departamento departamento = departamentoRepository.findById(request.departamentoId())
-                .orElseThrow(() -> new IllegalArgumentException("Departamento não encontrado: " + request.departamentoId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Departamento não encontrado: " + request.departamentoId()));
 
         if (!departamento.getDivisao().getId().equals(divisao.getId())) {
             throw new IllegalArgumentException(

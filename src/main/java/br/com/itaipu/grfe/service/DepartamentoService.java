@@ -4,6 +4,7 @@ import br.com.itaipu.grfe.dto.request.DepartamentoRequest;
 import br.com.itaipu.grfe.dto.response.DepartamentoResponse;
 import br.com.itaipu.grfe.entity.Departamento;
 import br.com.itaipu.grfe.entity.Divisao;
+import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.DepartamentoRepository;
 import br.com.itaipu.grfe.repository.DivisaoRepository;
 import org.springframework.stereotype.Service;
@@ -53,18 +54,18 @@ public class DepartamentoService {
     @Transactional
     public void deletar(Long id) {
         if (!departamentoRepository.existsById(id)) {
-            throw new IllegalArgumentException("Departamento não encontrado: " + id);
+            throw new EntidadeNaoEncontradaException("Departamento não encontrado: " + id);
         }
         departamentoRepository.deleteById(id);
     }
 
     private Departamento buscarEntidadePorId(Long id) {
         return departamentoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Departamento não encontrado: " + id));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Departamento não encontrado: " + id));
     }
 
     private Divisao buscarDivisao(Long divisaoId) {
         return divisaoRepository.findById(divisaoId)
-                .orElseThrow(() -> new IllegalArgumentException("Divisão não encontrada: " + divisaoId));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Divisão não encontrada: " + divisaoId));
     }
 }

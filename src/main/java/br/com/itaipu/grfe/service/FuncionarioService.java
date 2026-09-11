@@ -4,6 +4,7 @@ import br.com.itaipu.grfe.dto.request.FuncionarioRequest;
 import br.com.itaipu.grfe.dto.response.FuncionarioResponse;
 import br.com.itaipu.grfe.entity.Especialidades;
 import br.com.itaipu.grfe.entity.Funcionario;
+import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
 import org.springframework.stereotype.Service;
@@ -57,20 +58,20 @@ public class FuncionarioService {
     @Transactional
     public void deletar(Long id) {
         if (!funcionarioRepository.existsById(id)) {
-            throw new IllegalArgumentException("Funcionário não encontrado: " + id);
+            throw new EntidadeNaoEncontradaException("Funcionário não encontrado: " + id);
         }
         funcionarioRepository.deleteById(id);
     }
 
     private Funcionario buscarEntidadePorId(Long id) {
         return funcionarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Funcionário não encontrado: " + id));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado: " + id));
     }
 
     private Set<Especialidades> buscarEspecialidades(Set<Long> ids) {
         Set<Especialidades> especialidades = new HashSet<>(especialidadesRepository.findAllById(ids));
         if (especialidades.size() != ids.size()) {
-            throw new IllegalArgumentException("Uma ou mais especialidades informadas não existem");
+            throw new EntidadeNaoEncontradaException("Uma ou mais especialidades informadas não existem");
         }
         return especialidades;
     }

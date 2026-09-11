@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.EscalaResponse;
 import br.com.itaipu.grfe.entity.Escala;
 import br.com.itaipu.grfe.entity.Especialidades;
 import br.com.itaipu.grfe.entity.Funcionario;
+import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.EscalaRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
@@ -59,22 +60,22 @@ public class EscalaService {
     @Transactional
     public void deletar(Long id) {
         if (!escalaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Escala não encontrada: " + id);
+            throw new EntidadeNaoEncontradaException("Escala não encontrada: " + id);
         }
         escalaRepository.deleteById(id);
     }
 
     private Escala buscarEntidadePorId(Long id) {
         return escalaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Escala não encontrada: " + id));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Escala não encontrada: " + id));
     }
 
     private void vincularEspecialidadeEFuncionario(Escala escala, EscalaRequest request) {
         Especialidades especialidade = especialidadesRepository.findById(request.especialidadeId())
-                .orElseThrow(() -> new IllegalArgumentException("Especialidade não encontrada: " + request.especialidadeId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Especialidade não encontrada: " + request.especialidadeId()));
 
         Funcionario funcionario = funcionarioRepository.findById(request.funcionarioId())
-                .orElseThrow(() -> new IllegalArgumentException("Funcionário não encontrado: " + request.funcionarioId()));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado: " + request.funcionarioId()));
 
         escala.setEspecialidade(especialidade);
         escala.setFuncionario(funcionario);
