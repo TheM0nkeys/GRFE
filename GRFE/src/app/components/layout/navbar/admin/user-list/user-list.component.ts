@@ -2,15 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MdbRippleModule } from 'mdb-angular-ui-kit/ripple';
-
-interface Usuario {
-  nome: string;
-  iniciais: string;
-  email: string;
-  perfil: 'Administrador' | 'Usuário';
-  equipe: string;
-  setor: string;
-}
+import Swal from 'sweetalert2';
+import { Usuario } from '../../../../../models/usuario';
 
 @Component({
   selector: 'app-user-list',
@@ -24,6 +17,18 @@ export class UserListComponent {
 
   formularioAberto = false;
   usuarioEmEdicao: Usuario | null = null;
+
+  readonly equipes = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon'];
+  readonly setores = [
+    'Geração',
+    'Transmissão',
+    'Subestação',
+    'Manutenção Mecânica',
+    'Manutenção Elétrica',
+    'TI & Sistemas',
+    'Segurança',
+    'Civil'
+  ];
 
   constructor(private readonly formBuilder: FormBuilder) {
     this.formularioUsuario = this.formBuilder.nonNullable.group({
@@ -178,18 +183,20 @@ export class UserListComponent {
   }
 
   removerUsuario(usuario: Usuario): void {
-
-    const confirmar = confirm(
-      `Deseja realmente remover ${usuario.nome}?`
-    );
-
-    if (!confirmar) {
-      return;
-    }
-
-    this.usuarios = this.usuarios.filter(
-      item => item !== usuario
-    );
+    void Swal.fire({
+      icon: 'warning',
+      title: 'Remover usuário?',
+      text: `Deseja realmente remover ${usuario.nome}?`,
+      showCancelButton: true,
+      confirmButtonText: 'Remover',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#c94444',
+      reverseButtons: true
+    }).then((resultado) => {
+      if (resultado.isConfirmed) {
+        this.usuarios = this.usuarios.filter(item => item !== usuario);
+      }
+    });
   }
 
 }

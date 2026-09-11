@@ -61,12 +61,18 @@
 
           <div class="col-md-3">
             <label class="form-label" for="equipeUsuario">Equipe</label>
-            <input id="equipeUsuario" class="form-control" type="text" formControlName="equipe">
+            <select id="equipeUsuario" class="form-select" formControlName="equipe">
+              <option value="" disabled>Selecione uma equipe</option>
+              <option *ngFor="let equipe of equipes" [value]="equipe">{{ equipe }}</option>
+            </select>
           </div>
 
           <div class="col-md-6">
             <label class="form-label" for="setorUsuario">Setor</label>
-            <input id="setorUsuario" class="form-control" type="text" formControlName="setor">
+            <select id="setorUsuario" class="form-select" formControlName="setor">
+              <option value="" disabled>Selecione um setor</option>
+              <option *ngFor="let setor of setores" [value]="setor">{{ setor }}</option>
+            </select>
           </div>
 
           <div class="col-12 d-flex justify-content-end gap-2">
