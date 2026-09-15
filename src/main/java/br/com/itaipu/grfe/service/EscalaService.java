@@ -43,6 +43,13 @@ public class EscalaService {
 
     @Transactional
     public EscalaResponse criar(EscalaRequest request) {
+
+        if (request.dataHoraFim().isBefore(request.dataHoraInicio())
+                || request.dataHoraFim().isEqual(request.dataHoraInicio())) {
+            throw new IllegalArgumentException(
+            );
+        }
+
         Escala escala = request.toEntity();
         vincularEspecialidadeEFuncionario(escala, request);
         return EscalaResponse.fromEntity(escalaRepository.save(escala));
@@ -50,6 +57,13 @@ public class EscalaService {
 
     @Transactional
     public EscalaResponse atualizar(Long id, EscalaRequest request) {
+
+        if (request.dataHoraFim().isBefore(request.dataHoraInicio())
+                || request.dataHoraFim().isEqual(request.dataHoraInicio())) {
+            throw new IllegalArgumentException(
+            );
+        }
+
         Escala escala = buscarEntidadePorId(id);
         escala.setDataHoraInicio(request.dataHoraInicio());
         escala.setDataHoraFim(request.dataHoraFim());
