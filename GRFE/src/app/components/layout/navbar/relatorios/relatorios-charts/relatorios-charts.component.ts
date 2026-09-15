@@ -18,6 +18,8 @@ export class RelatoriosChartsComponent implements AfterViewInit, OnDestroy {
   @ViewChild('setoresChart') setoresChart?: ElementRef<HTMLCanvasElement>;
 
   dados?: RelatorioDados;
+  carregando = true;
+  erro = false;
   private charts: Chart[] = [];
 
   constructor(
@@ -26,10 +28,18 @@ export class RelatoriosChartsComponent implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit(): void {
-    this.relatorioService.obterDados().subscribe((dados) => {
-      this.dados = dados;
-      this.changeDetector.detectChanges();
-      this.criarGraficos();
+    this.relatorioService.obterDados().subscribe({
+      next: (dados) => {
+        this.dados = dados;
+        this.carregando = false;
+        this.changeDetector.detectChanges();
+        this.criarGraficos();
+      },
+      error: () => {
+        this.carregando = false;
+        this.erro = true;
+        this.changeDetector.detectChanges();
+      }
     });
   }
 

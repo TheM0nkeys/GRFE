@@ -73,6 +73,15 @@
   transform: translateY(0);
 }
 
+.custom-dropdown-menu .logout-item {
+  color: red;
+}
+
+.custom-dropdown-menu .logout-item:hover {
+  background-color: rgba(255, 0, 0, 0.12);
+  color: red;
+}
+
 /* Empurra o conteúdo para não ficar sob o botão fixo */
 .page-content {
   padding-top: 60px;

@@ -12,10 +12,19 @@ import { RelatorioService } from '../../../../../services/relatorio-service.serv
 })
 export class RelatoriosComponent {
   dados?: RelatorioDados;
+  carregando = true;
+  erro = false;
 
   constructor(private readonly relatorioService: RelatorioService) {
-    this.relatorioService.obterDados().subscribe((dados) => {
-      this.dados = dados;
+    this.relatorioService.obterDados().subscribe({
+      next: (dados) => {
+        this.dados = dados;
+        this.carregando = false;
+      },
+      error: () => {
+        this.carregando = false;
+        this.erro = true;
+      }
     });
   }
 

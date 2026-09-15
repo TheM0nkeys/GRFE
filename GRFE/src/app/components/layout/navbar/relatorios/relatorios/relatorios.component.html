@@ -1,5 +1,7 @@
 <main class="reports-page">
 	<router-outlet></router-outlet>
+	<p class="report-state" *ngIf="carregando">Carregando relatório...</p>
+	<p class="report-state error" *ngIf="erro">Não foi possível carregar o relatório. Verifique se o back-end está ativo e se o proxy está configurado.</p>
 
 	<ng-container *ngIf="dados as relatorio">
 	<header class="page-heading">

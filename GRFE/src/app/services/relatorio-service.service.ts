@@ -1,46 +1,70 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { ChamadoService } from './chamado-service.service';
 import { RelatorioDados } from '../models/relatorio';
 
 @Injectable({ providedIn: 'root' })
 export class RelatorioService {
-  // Mock temporário. Substitua o retorno por HttpClient quando a API estiver disponível.
+  constructor(private readonly chamadoService: ChamadoService) {}
+
   obterDados(): Observable<RelatorioDados> {
-    return of({
-      kpis: [
-        { titulo: 'INCIDENTES ESTE MÊS', valor: '7', detalhe: '5 no mês anterior' },
-        { titulo: 'SETOR CRÍTICO (AGO)', valor: 'Transmissão', detalhe: '2 ocorrências' },
-        { titulo: 'INCIDENTES ESTA SEMANA', valor: '1', detalhe: 'Semana 35/2026' },
-        { titulo: 'TAXA DE RESOLUÇÃO', valor: '87%', detalhe: 'de todos os incidentes' }
-      ],
-      tendenciaMensal: {
-        labels: ['Jun', 'Jul', 'Ago'],
-        criticos: [1, 1, 1],
-        resolvidos: [3, 5, 5],
-        total: [3, 5, 7]
-      },
-      incidentesPorSemana: {
-        labels: ['S23', 'S25', 'S26', 'S27', 'S28', 'S29', 'S30', 'S31', 'S32', 'S33', 'S34', 'S35'],
-        valores: [1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1]
-      },
-      incidentesPorSetor: {
-        labels: ['Jun', 'Jul', 'Ago'],
-        datasets: [
-          { label: 'Geração', data: [0, 1, 1], backgroundColor: '#1f4275' },
-          { label: 'Manutenção Elétrica', data: [0, 2, 0], backgroundColor: '#7b3fe4' },
-          { label: 'Subestação', data: [1, 1, 0], backgroundColor: '#d97800' },
-          { label: 'TI & Sistemas', data: [1, 0, 2], backgroundColor: '#2e63dc' },
-          { label: 'Transmissão', data: [0, 0, 2], backgroundColor: '#009b73' }
-        ]
-      },
-      sobreaviso: [
-        { iniciais: 'CM', nome: 'Carlos Mendes', equipe: 'Alpha', setor: 'TI & Sistemas', totalPlantoes: 3, maiorSequencia: 1, alerta: 'Normal' },
-        { iniciais: 'AR', nome: 'Ana Rodrigues', equipe: 'Beta', setor: 'Geração', totalPlantoes: 3, maiorSequencia: 1, alerta: 'Normal' },
-        { iniciais: 'PS', nome: 'Pedro Souza', equipe: 'Alpha', setor: 'Transmissão', totalPlantoes: 3, maiorSequencia: 1, alerta: 'Normal' },
-        { iniciais: 'FL', nome: 'Fernanda Lima', equipe: 'Gamma', setor: 'Manutenção Elétrica', totalPlantoes: 3, maiorSequencia: 1, alerta: 'Normal' },
-        { iniciais: 'RT', nome: 'Rafael Torres', equipe: 'Delta', setor: 'Manutenção Mecânica', totalPlantoes: 3, maiorSequencia: 1, alerta: 'Normal' }
-      ]
-    });
+    return this.chamadoService.obterChamados().pipe(map((chamados) => {
+      const total = chamados.length;
+      const resolvidos = chamados.filter((chamado) => chamado.status === 'Resolvido').length;
+      const porSetor = this.contar(chamados.map((chamado) => chamado.setor || 'Sem setor'));
+      const setorCritico = [...porSetor.entries()].sort((a, b) => b[1] - a[1])[0];
+      const meses = [...new Set(chamados.map((chamado) => chamado.data.slice(0, 7)))].sort();
+      const labels = meses.length ? meses : [this.mesAtual()];
+
+      return {
+        kpis: [
+          { titulo: 'INCIDENTES ESTE MÊS', valor: String(chamados.filter((chamado) => chamado.data.slice(0, 7) === this.mesAtual()).length), detalhe: `${total} no total` },
+          { titulo: 'SETOR CRÍTICO', valor: setorCritico?.[0] || 'Sem dados', detalhe: `${setorCritico?.[1] || 0} ocorrências` },
+          { titulo: 'INCIDENTES ESTA SEMANA', valor: String(chamados.filter((chamado) => this.naSemanaAtual(chamado.data)).length), detalhe: 'período atual' },
+          { titulo: 'TAXA DE RESOLUÇÃO', valor: `${total ? Math.round(resolvidos / total * 100) : 0}%`, detalhe: 'dos incidentes' }
+        ],
+        tendenciaMensal: {
+          labels: labels.map((mes) => mes.slice(5)),
+          criticos: labels.map((mes) => chamados.filter((chamado) => chamado.data.startsWith(mes) && chamado.severidade === 'Crítica').length),
+          resolvidos: labels.map((mes) => chamados.filter((chamado) => chamado.data.startsWith(mes) && chamado.status === 'Resolvido').length),
+          total: labels.map((mes) => chamados.filter((chamado) => chamado.data.startsWith(mes)).length)
+        },
+        incidentesPorSemana: this.agruparPorSemana(chamados),
+        incidentesPorSetor: {
+          labels: [...porSetor.keys()],
+          datasets: [{ label: 'Incidentes', data: [...porSetor.values()], backgroundColor: '#244b82' }]
+        },
+        sobreaviso: []
+      };
+    }));
+  }
+
+  private contar(valores: string[]): Map<string, number> {
+    return valores.reduce((totais, valor) => totais.set(valor, (totais.get(valor) ?? 0) + 1), new Map<string, number>());
+  }
+
+  private agruparPorSemana(chamados: import('../models/chamado').Chamado[]): { labels: string[]; valores: number[] } {
+    const semanas = this.contar(chamados.map((chamado) => `S${this.semanaDoAno(chamado.data)}`));
+    return { labels: [...semanas.keys()], valores: [...semanas.values()] };
+  }
+
+  private semanaDoAno(data: string): number {
+    const inicio = new Date(new Date(data).getFullYear(), 0, 1);
+    return Math.ceil((((new Date(data).getTime() - inicio.getTime()) / 86400000) + inicio.getDay() + 1) / 7);
+  }
+
+  private mesAtual(): string {
+    return new Date().toISOString().slice(0, 7);
+  }
+
+  private naSemanaAtual(data: string): boolean {
+    const hoje = new Date();
+    const inicio = new Date(hoje);
+    inicio.setDate(hoje.getDate() - hoje.getDay());
+    const fim = new Date(inicio);
+    fim.setDate(inicio.getDate() + 7);
+    const dataChamado = new Date(`${data}T00:00:00`);
+    return dataChamado >= inicio && dataChamado < fim;
   }
 
   gerarCsv(dados: RelatorioDados): void {

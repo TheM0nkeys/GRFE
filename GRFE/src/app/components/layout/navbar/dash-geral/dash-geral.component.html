@@ -13,8 +13,9 @@
 	</div>
 
 	<section class="shift-panel">
-		<div class="panel-heading"><h2>Plantão da Semana <span>— Semana 35/2026</span></h2><span class="date-range">2026-08-22 → 2026-08-24</span></div>
-		<div class="shift-grid"><div class="shift-person"><span class="shift-label">RESPONSÁVEL PRINCIPAL</span><div><b>PS</b><p>Pedro Souza<small>Transmissão</small></p></div></div><div class="shift-person"><span class="shift-label">RESPONSÁVEL SECUNDÁRIO</span><div><b class="green">JC</b><p>Juliana Castro<small>Alpha — Subestação</small></p></div></div></div>
+		<div class="panel-heading"><h2>Responsáveis mais acionados</h2><span class="date-range">{{ periodoChamados }}</span></div>
+		<div class="shift-grid" *ngIf="responsaveis.length; else semResponsaveis"><div class="shift-person" *ngFor="let responsavel of responsaveis; let i = index"><span class="shift-label">{{ i ? 'RESPONSÁVEL SECUNDÁRIO' : 'RESPONSÁVEL PRINCIPAL' }}</span><div><b [class.green]="i === 1">{{ iniciais(responsavel.nome) }}</b><p>{{ responsavel.nome }}<small>{{ responsavel.total }} chamado(s) · {{ responsavelSetor(responsavel.nome) }}</small></p></div></div></div>
+		<ng-template #semResponsaveis><p class="empty">Nenhum responsável encontrado.</p></ng-template>
 	</section>
 
 	<div class="content-grid">
@@ -23,6 +24,6 @@
 			<p class="empty" *ngIf="!recentes.length && !carregando">Nenhum incidente encontrado.</p>
 		</section>
 		<section class="panel chart-panel"><div class="panel-heading"><h2>Incidentes por Colaborador</h2></div><div class="bar-chart"><div class="bar-item" *ngFor="let colaborador of colaboradores"><div class="bar-track"><span [style.height.%]="colaborador.total / maiorTotalColaborador() * 100"></span></div><b>{{ colaborador.total }}</b><small>{{ colaborador.nome }}</small></div></div></section>
-		<section class="panel chart-panel sector-panel"><div class="panel-heading"><h2>Incidentes por Setor</h2></div><div class="sector-content"><div class="donut"></div><div class="legend"><span *ngFor="let setor of setores; let i = index"><i [style.background]="['#1e4275','#2f67df','#0a9b73','#d04435','#e58100','#7142de'][i % 6]"></i>{{ setor.nome }} <b>{{ setor.total }}</b></span></div></div></section>
+		<section class="panel chart-panel sector-panel"><div class="panel-heading"><h2>Incidentes por Setor</h2></div><div class="sector-content"><div class="donut" [style.background]="gradienteSetores"></div><div class="legend"><span *ngFor="let setor of setores; let i = index"><i [style.background]="['#1e4275','#2f67df','#0a9b73','#d04435','#e58100','#7142de'][i % 6]"></i>{{ setor.nome }} <b>{{ setor.total }}</b></span><span *ngIf="!setores.length" class="empty">Nenhum setor encontrado.</span></div></div></section>
 	</div>
 </section>

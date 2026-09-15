@@ -1,3 +1,6 @@
+<p class="report-state" *ngIf="carregando">Carregando gráficos...</p>
+<p class="report-state error" *ngIf="erro">Não foi possível carregar os gráficos. Verifique a conexão com o back-end.</p>
+
 <section class="charts-content" *ngIf="dados">
 	<div class="card chart-card trend-card">
 		<div class="card-body">

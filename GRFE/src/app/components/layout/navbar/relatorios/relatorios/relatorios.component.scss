@@ -5,6 +5,9 @@
 	background: #f4f7fc;
 }
 
+.report-state { padding: 28px 0; color: #7085a2; font-size: 14px; }
+.report-state.error { color: #b64238; }
+
 .reports-page {
 	max-width: 1440px;
 	margin: 0 auto;
