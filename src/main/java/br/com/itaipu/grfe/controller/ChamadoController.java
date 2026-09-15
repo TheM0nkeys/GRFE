@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import br.com.itaipu.grfe.entity.enums.StatusChamado;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -27,14 +29,25 @@ public class ChamadoController {
         this.historicoAcionamentoService = historicoAcionamentoService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ChamadoResponse>> listarTodos() {
-        return ResponseEntity.ok(chamadoService.listarTodos());
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ChamadoResponse> atualizarStatus(
+            @PathVariable Long id,
+            @RequestParam StatusChamado status) {
+
+        return ResponseEntity.ok(
+                chamadoService.atualizarStatus(id, status)
+        );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ChamadoResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(chamadoService.buscarPorId(id));
+    @GetMapping
+    public ResponseEntity<List<ChamadoResponse>> listarTodos(
+            @RequestParam(required = false) StatusChamado status) {
+
+        if (status != null) {
+            return ResponseEntity.ok(chamadoService.listarPorStatus(status));
+        }
+
+        return ResponseEntity.ok(chamadoService.listarTodos());
     }
 
     @PostMapping

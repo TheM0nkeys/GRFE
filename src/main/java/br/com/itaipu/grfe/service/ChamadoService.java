@@ -11,8 +11,9 @@ import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import br.com.itaipu.grfe.entity.enums.StatusChamado;
 import java.util.List;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -37,8 +38,22 @@ public class ChamadoService {
                 .toList();
     }
 
+    public List<ChamadoResponse> listarPorStatus(StatusChamado status) {
+        return chamadoRepository.findByStatus(status)
+                .stream()
+                .map(ChamadoResponse::fromEntity)
+                .toList();
+    }
+
     public ChamadoResponse buscarPorId(Long id) {
         return ChamadoResponse.fromEntity(buscarEntidadePorId(id));
+    }
+
+    @Transactional
+    public ChamadoResponse atualizarStatus(Long id, StatusChamado status) {
+        Chamado chamado = buscarEntidadePorId(id);
+        chamado.setStatus(status);
+        return ChamadoResponse.fromEntity(chamadoRepository.save(chamado));
     }
 
     @Transactional
