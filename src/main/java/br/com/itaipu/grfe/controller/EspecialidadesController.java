@@ -3,12 +3,14 @@ package br.com.itaipu.grfe.controller;
 import br.com.itaipu.grfe.dto.request.EspecialidadesRequest;
 import br.com.itaipu.grfe.dto.response.EspecialidadeResponse;
 import br.com.itaipu.grfe.service.EspecialidadesService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Especialidades", description = "Especialidades de sobreaviso")
 @RestController
 @RequestMapping("/especialidades")
 public class EspecialidadesController {

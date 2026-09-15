@@ -6,12 +6,14 @@ import br.com.itaipu.grfe.dto.response.ChamadoResponse;
 import br.com.itaipu.grfe.dto.response.HistoricoAcionamentoResponse;
 import br.com.itaipu.grfe.service.ChamadoService;
 import br.com.itaipu.grfe.service.HistoricoAcionamentoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Chamados (Acionamentos)", description = "Registro e acompanhamento de acionamentos de sobreaviso")
 @RestController
 @RequestMapping("/chamados")
 public class ChamadoController {

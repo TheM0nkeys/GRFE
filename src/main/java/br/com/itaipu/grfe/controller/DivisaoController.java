@@ -3,12 +3,14 @@ package br.com.itaipu.grfe.controller;
 import br.com.itaipu.grfe.dto.request.DivisaoRequest;
 import br.com.itaipu.grfe.dto.response.DivisaoResponse;
 import br.com.itaipu.grfe.service.DivisaoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Divisões", description = "Cadastro de divisões da estrutura organizacional")
 @RestController
 @RequestMapping("/divisoes")
 public class DivisaoController {

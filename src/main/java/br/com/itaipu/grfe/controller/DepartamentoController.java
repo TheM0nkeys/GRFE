@@ -3,12 +3,14 @@ package br.com.itaipu.grfe.controller;
 import br.com.itaipu.grfe.dto.request.DepartamentoRequest;
 import br.com.itaipu.grfe.dto.response.DepartamentoResponse;
 import br.com.itaipu.grfe.service.DepartamentoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Departamentos", description = "Cadastro de departamentos da estrutura organizacional")
 @RestController
 @RequestMapping("/departamentos")
 public class DepartamentoController {
