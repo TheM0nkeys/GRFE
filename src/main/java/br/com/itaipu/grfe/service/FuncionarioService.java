@@ -7,6 +7,8 @@ import br.com.itaipu.grfe.entity.Funcionario;
 import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,8 @@ import java.util.Set;
 @Service
 @Transactional(readOnly = true)
 public class FuncionarioService {
+
+    private static final Logger log = LoggerFactory.getLogger(FuncionarioService.class);
 
     private final FuncionarioRepository funcionarioRepository;
     private final EspecialidadesRepository especialidadesRepository;
@@ -42,7 +46,9 @@ public class FuncionarioService {
     public FuncionarioResponse criar(FuncionarioRequest request) {
         Funcionario funcionario = request.toEntity();
         funcionario.setEspecialidades(buscarEspecialidades(request.especialidadeIds()));
-        return FuncionarioResponse.fromEntity(funcionarioRepository.save(funcionario));
+        funcionario = funcionarioRepository.save(funcionario);
+        log.info("Funcionário criado: id={}, matricula={}", funcionario.getId(), funcionario.getMatricula());
+        return FuncionarioResponse.fromEntity(funcionario);
     }
 
     @Transactional
@@ -52,25 +58,33 @@ public class FuncionarioService {
         funcionario.setMatricula(request.matricula());
         funcionario.setEmail(request.email());
         funcionario.setEspecialidades(buscarEspecialidades(request.especialidadeIds()));
-        return FuncionarioResponse.fromEntity(funcionarioRepository.save(funcionario));
+        funcionario = funcionarioRepository.save(funcionario);
+        log.info("Funcionário atualizado: id={}", id);
+        return FuncionarioResponse.fromEntity(funcionario);
     }
 
     @Transactional
     public void deletar(Long id) {
         if (!funcionarioRepository.existsById(id)) {
+            log.warn("Tentativa de excluir funcionário inexistente: id={}", id);
             throw new EntidadeNaoEncontradaException("Funcionário não encontrado: " + id);
         }
         funcionarioRepository.deleteById(id);
+        log.info("Funcionário removido: id={}", id);
     }
 
     private Funcionario buscarEntidadePorId(Long id) {
         return funcionarioRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Funcionário não encontrado: id={}", id);
+                    return new EntidadeNaoEncontradaException("Funcionário não encontrado: " + id);
+                });
     }
 
     private Set<Especialidades> buscarEspecialidades(Set<Long> ids) {
         Set<Especialidades> especialidades = new HashSet<>(especialidadesRepository.findAllById(ids));
         if (especialidades.size() != ids.size()) {
+            log.warn("Uma ou mais especialidades informadas não existem: ids={}", ids);
             throw new EntidadeNaoEncontradaException("Uma ou mais especialidades informadas não existem");
         }
         return especialidades;

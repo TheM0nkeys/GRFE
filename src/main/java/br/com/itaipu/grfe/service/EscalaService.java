@@ -9,6 +9,8 @@ import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.EscalaRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,8 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class EscalaService {
+
+    private static final Logger log = LoggerFactory.getLogger(EscalaService.class);
 
     private final EscalaRepository escalaRepository;
     private final EspecialidadesRepository especialidadesRepository;
@@ -45,7 +49,10 @@ public class EscalaService {
     public EscalaResponse criar(EscalaRequest request) {
         Escala escala = request.toEntity();
         vincularEspecialidadeEFuncionario(escala, request);
-        return EscalaResponse.fromEntity(escalaRepository.save(escala));
+        escala = escalaRepository.save(escala);
+        log.info("Escala criada: id={}, especialidadeId={}, funcionarioId={}",
+                escala.getId(), request.especialidadeId(), request.funcionarioId());
+        return EscalaResponse.fromEntity(escala);
     }
 
     @Transactional
@@ -54,28 +61,41 @@ public class EscalaService {
         escala.setDataHoraInicio(request.dataHoraInicio());
         escala.setDataHoraFim(request.dataHoraFim());
         vincularEspecialidadeEFuncionario(escala, request);
-        return EscalaResponse.fromEntity(escalaRepository.save(escala));
+        escala = escalaRepository.save(escala);
+        log.info("Escala atualizada: id={}", id);
+        return EscalaResponse.fromEntity(escala);
     }
 
     @Transactional
     public void deletar(Long id) {
         if (!escalaRepository.existsById(id)) {
+            log.warn("Tentativa de excluir escala inexistente: id={}", id);
             throw new EntidadeNaoEncontradaException("Escala não encontrada: " + id);
         }
         escalaRepository.deleteById(id);
+        log.info("Escala removida: id={}", id);
     }
 
     private Escala buscarEntidadePorId(Long id) {
         return escalaRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Escala não encontrada: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Escala não encontrada: id={}", id);
+                    return new EntidadeNaoEncontradaException("Escala não encontrada: " + id);
+                });
     }
 
     private void vincularEspecialidadeEFuncionario(Escala escala, EscalaRequest request) {
         Especialidades especialidade = especialidadesRepository.findById(request.especialidadeId())
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Especialidade não encontrada: " + request.especialidadeId()));
+                .orElseThrow(() -> {
+                    log.warn("Especialidade não encontrada ao vincular escala: especialidadeId={}", request.especialidadeId());
+                    return new EntidadeNaoEncontradaException("Especialidade não encontrada: " + request.especialidadeId());
+                });
 
         Funcionario funcionario = funcionarioRepository.findById(request.funcionarioId())
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado: " + request.funcionarioId()));
+                .orElseThrow(() -> {
+                    log.warn("Funcionário não encontrado ao vincular escala: funcionarioId={}", request.funcionarioId());
+                    return new EntidadeNaoEncontradaException("Funcionário não encontrado: " + request.funcionarioId());
+                });
 
         escala.setEspecialidade(especialidade);
         escala.setFuncionario(funcionario);
