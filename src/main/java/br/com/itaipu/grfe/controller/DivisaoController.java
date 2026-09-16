@@ -37,6 +37,7 @@ public class DivisaoController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(divisaoService.criar(request));
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<DivisaoResponse> atualizar(@PathVariable Long id,
                                                      @RequestBody @Valid DivisaoRequest request) {
