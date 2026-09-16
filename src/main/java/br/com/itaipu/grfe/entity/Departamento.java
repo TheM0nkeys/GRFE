@@ -11,7 +11,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "departamento")
 public class Departamento {
 

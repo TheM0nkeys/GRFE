@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.EscalaResponse;
 import br.com.itaipu.grfe.service.EscalaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,8 @@ public class EscalaController {
 
     @PostMapping
     public ResponseEntity<EscalaResponse> criar(@RequestBody @Valid EscalaRequest request) {
-        return ResponseEntity.ok(escalaService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(escalaService.criar(request));
     }
 
     @PutMapping("/{id}")

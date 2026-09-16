@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.FuncionarioResponse;
 import br.com.itaipu.grfe.service.FuncionarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,8 @@ public class FuncionarioController {
 
     @PostMapping
     public ResponseEntity<FuncionarioResponse> criar(@RequestBody @Valid FuncionarioRequest request) {
-        return ResponseEntity.ok(funcionarioService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(funcionarioService.criar(request));
     }
 
     @PutMapping("/{id}")

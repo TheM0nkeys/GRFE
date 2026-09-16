@@ -51,6 +51,7 @@ public class EscalaService {
         if (request.dataHoraFim().isBefore(request.dataHoraInicio())
                 || request.dataHoraFim().isEqual(request.dataHoraInicio())) {
             throw new IllegalArgumentException(
+                    "A data/hora de fim deve ser posterior à data/hora de início."
             );
         }
 
@@ -68,6 +69,7 @@ public class EscalaService {
         if (request.dataHoraFim().isBefore(request.dataHoraInicio())
                 || request.dataHoraFim().isEqual(request.dataHoraInicio())) {
             throw new IllegalArgumentException(
+                    "A data/hora de fim deve ser posterior à data/hora de início."
             );
         }
 
@@ -110,6 +112,18 @@ public class EscalaService {
                     log.warn("Funcionário não encontrado ao vincular escala: funcionarioId={}", request.funcionarioId());
                     return new EntidadeNaoEncontradaException("Funcionário não encontrado: " + request.funcionarioId());
                 });
+
+        if (!funcionario.getEspecialidades().contains(especialidade)) {
+            log.warn(
+                    "Funcionário sem especialidade para escala: funcionarioId={}, especialidadeId={}",
+                    funcionario.getId(),
+                    especialidade.getId()
+            );
+
+            throw new IllegalArgumentException(
+                    "O funcionário informado não possui a especialidade selecionada."
+            );
+        }
 
         escala.setEspecialidade(especialidade);
         escala.setFuncionario(funcionario);

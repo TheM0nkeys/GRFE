@@ -4,7 +4,7 @@ Sistema de gestão de chamados, equipes e escalas desenvolvido em Spring Boot.
 
 ## Tecnologias
 
-- Java 25
+- Java 17
 - Spring Boot 4.1.1
 - Spring Data JPA / Hibernate
 - PostgreSQL

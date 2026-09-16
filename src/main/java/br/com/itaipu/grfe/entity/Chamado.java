@@ -13,7 +13,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "chamado")
 public class Chamado {
 

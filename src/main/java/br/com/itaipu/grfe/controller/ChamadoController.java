@@ -8,6 +8,7 @@ import br.com.itaipu.grfe.service.ChamadoService;
 import br.com.itaipu.grfe.service.HistoricoAcionamentoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import br.com.itaipu.grfe.entity.enums.StatusChamado;
@@ -52,7 +53,8 @@ public class ChamadoController {
 
     @PostMapping
     public ResponseEntity<ChamadoResponse> criar(@RequestBody @Valid ChamadoRequest request) {
-        return ResponseEntity.ok(chamadoService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(chamadoService.criar(request));
     }
 
     @PutMapping("/{id}")
@@ -76,6 +78,7 @@ public class ChamadoController {
     public ResponseEntity<HistoricoAcionamentoResponse> registrarHistorico(
             @PathVariable Long id,
             @RequestBody @Valid HistoricoAcionamentoRequest request) {
-        return ResponseEntity.ok(historicoAcionamentoService.registrar(id, request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(historicoAcionamentoService.registrar(id, request));
     }
 }
