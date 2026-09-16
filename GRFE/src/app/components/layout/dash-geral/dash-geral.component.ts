@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Chamado } from '../../../../models/chamado';
-import { ChamadoService } from '../../../../services/chamado-service.service';
+import { DashServiceService } from '../../../../services/dash-service.service';
 
 @Component({
   selector: 'app-dash-geral',
@@ -15,19 +15,19 @@ export class DashGeralComponent implements OnInit {
   carregando = true;
   nomeUsuario = localStorage.getItem('grfe.usuario.nome') || 'usuário';
 
-  constructor(private readonly chamadoService: ChamadoService) {}
+  constructor(private readonly dashService: DashServiceService) {}
 
   ngOnInit(): void {
-    this.chamadoService.obterChamados().subscribe({
-      next: (chamados) => { this.chamados = chamados; this.carregando = false; },
-      error: () => { this.carregando = false; }
+    this.dashService.obterChamados().subscribe({
+      next: (chamados) => { this.chamados = chamados; this.carregando = false; console.log('Chamados obtidos com sucesso:', chamados); },
+      error: (error) => { console.log('Erro ao obter chamados:', error); this.carregando = false; }
     });
   }
 
   get abertos(): number { return this.chamados.filter((chamado) => chamado.status === 'Aberto').length; }
   get emAndamento(): number { return this.chamados.filter((chamado) => chamado.status === 'Em andamento').length; }
   get resolvidos(): number { return this.chamados.filter((chamado) => chamado.status === 'Resolvido').length; }
-  get criticos(): number { return this.chamados.filter((chamado) => chamado.severidade === 'Crítica').length; }
+  get especialidades(): number { return new Set(this.chamados.map((chamado) => chamado.especialidade).filter(Boolean)).size; }
   get recentes(): Chamado[] { return [...this.chamados].sort((a, b) => b.data.localeCompare(a.data)).slice(0, 5); }
 
   get colaboradores(): { nome: string; total: number }[] {
@@ -38,7 +38,7 @@ export class DashGeralComponent implements OnInit {
 
   get setores(): { nome: string; total: number; porcentagem: number }[] {
     const totais = new Map<string, number>();
-    this.chamados.forEach((chamado) => { const setor = chamado.setor || 'Sem setor'; totais.set(setor, (totais.get(setor) ?? 0) + 1); });
+    this.chamados.forEach((chamado) => { const setor = chamado.especialidade || 'Sem especialidade'; totais.set(setor, (totais.get(setor) ?? 0) + 1); });
     return [...totais.entries()].map(([nome, total]) => ({ nome, total, porcentagem: this.chamados.length ? total / this.chamados.length * 100 : 0 })).sort((a, b) => b.total - a.total);
   }
 
@@ -64,7 +64,7 @@ export class DashGeralComponent implements OnInit {
   }
 
   responsavelSetor(nome: string): string {
-    return this.chamados.find((chamado) => chamado.responsavel === nome)?.setor || 'Sem setor';
+    return this.chamados.find((chamado) => chamado.responsavel === nome)?.especialidade || 'Sem especialidade';
   }
 
   iniciais(nome: string): string {

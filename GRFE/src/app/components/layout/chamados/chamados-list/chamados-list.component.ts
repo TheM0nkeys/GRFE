@@ -19,12 +19,33 @@ export class ChamadosListComponent {
   severidade = 'Todas severidades';
   status = 'Todos status';
 
-  readonly setores = ['Todos os setores', 'Geração', 'Transmissão', 'Subestação', 'Manutenção Mecânica', 'Manutenção Elétrica', 'TI & Sistemas', 'Segurança', 'Civil'];
   readonly severidades = ['Todas severidades', 'Crítica', 'Alta', 'Média', 'Baixa'];
   readonly statusOptions = ['Todos status', 'Aberto', 'Em andamento', 'Resolvido'];
 
   constructor(private readonly chamadoService: ChamadoService) {
     this.chamadoService.obterChamados().subscribe((chamados) => this.chamados = chamados);
+  }
+
+  get setores(): string[] {
+    const valores = this.chamados
+      .map((chamado) => chamado.setor)
+      .filter((setor): setor is string => Boolean(setor));
+
+    return ['Todos os setores', ...Array.from(new Set(valores))];
+  }
+
+  get resumoPorSetor(): { nome: string; total: number }[] {
+    const totais = new Map<string, number>();
+
+    this.chamados.forEach((chamado) => {
+      const setor = chamado.setor || 'Sem setor';
+      totais.set(setor, (totais.get(setor) ?? 0) + 1);
+    });
+
+    return [...totais.entries()]
+      .map(([nome, total]) => ({ nome, total }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 8);
   }
 
   get chamadosFiltrados(): Chamado[] {

@@ -9,7 +9,7 @@
 		<article class="kpi-card kpi-primary"><span>INCIDENTES ABERTOS</span><strong>{{ abertos }}</strong><small>aguardando ação</small></article>
 		<article class="kpi-card"><span>EM ANDAMENTO</span><strong>{{ emAndamento }}</strong><small>sendo tratados</small></article>
 		<article class="kpi-card"><span>RESOLVIDOS</span><strong>{{ resolvidos }}</strong><small>total histórico</small></article>
-		<article class="kpi-card"><span>CRÍTICOS</span><strong>{{ criticos }}</strong><small>total histórico</small></article>
+		<article class="kpi-card"><span>ESPECIALIDADES</span><strong>{{ especialidades }}</strong><small>com chamados registrados</small></article>
 	</div>
 
 	<section class="shift-panel">
@@ -20,7 +20,7 @@
 
 	<div class="content-grid">
 		<section class="panel recent-panel"><div class="panel-heading"><h2>Incidentes Recentes</h2><span class="panel-count">{{ recentes.length }}</span></div>
-			<div class="incident-row" *ngFor="let chamado of recentes"><i [class]="'severity-dot ' + statusClasse(chamado.status)"></i><div class="incident-info"><strong>{{ chamado.titulo }}</strong><span>{{ chamado.setor || 'Sem setor' }} · {{ chamado.data }}</span></div><span class="responsible">{{ chamado.responsavel }}</span><span [class]="'status ' + statusClasse(chamado.status)">{{ chamado.status }}</span></div>
+			<div class="incident-row" *ngFor="let chamado of recentes"><i [class]="'severity-dot ' + statusClasse(chamado.status)"></i><div class="incident-info"><strong>{{ chamado.titulo }}</strong><span>{{ chamado.especialidade || 'Sem especialidade' }} · {{ chamado.data }}</span></div><span class="responsible">{{ chamado.responsavel || 'Sem responsável' }}</span><span [class]="'status ' + statusClasse(chamado.status)">{{ chamado.status }}</span></div>
 			<p class="empty" *ngIf="!recentes.length && !carregando">Nenhum incidente encontrado.</p>
 		</section>
 		<section class="panel chart-panel"><div class="panel-heading"><h2>Incidentes por Colaborador</h2></div><div class="bar-chart"><div class="bar-item" *ngFor="let colaborador of colaboradores"><div class="bar-track"><span [style.height.%]="colaborador.total / maiorTotalColaborador() * 100"></span></div><b>{{ colaborador.total }}</b><small>{{ colaborador.nome }}</small></div></div></section>

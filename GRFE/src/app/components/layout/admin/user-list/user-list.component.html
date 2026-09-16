@@ -54,25 +54,33 @@
           <div class="col-md-3">
             <label class="form-label" for="perfilUsuario">Perfil</label>
             <select id="perfilUsuario" class="form-select" formControlName="perfil">
-              <option value="Usuário">Usuário</option>
-              <option value="Administrador">Administrador</option>
+              <option value="" disabled>Carregando perfis...</option>
             </select>
           </div>
 
           <div class="col-md-3">
             <label class="form-label" for="equipeUsuario">Equipe</label>
             <select id="equipeUsuario" class="form-select" formControlName="equipe">
-              <option value="" disabled>Selecione uma equipe</option>
-              <option *ngFor="let equipe of equipes" [value]="equipe">{{ equipe }}</option>
+              <option value="" disabled>Carregando equipes...</option>
             </select>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-3">
             <label class="form-label" for="setorUsuario">Setor</label>
             <select id="setorUsuario" class="form-select" formControlName="setor">
-              <option value="" disabled>Selecione um setor</option>
-              <option *ngFor="let setor of setores" [value]="setor">{{ setor }}</option>
+              <option value="" disabled>Carregando setores...</option>
             </select>
+          </div>
+
+          <div class="col-md-3" *ngIf="perfilAtual === 'Plantonista'">
+            <label class="form-label" for="especialidadeUsuario">Especialidade</label>
+            <select id="especialidadeUsuario" class="form-select" formControlName="especialidade">
+              <option value="" disabled>Selecione uma especialidade</option>
+              <option *ngFor="let especialidade of especialidades" [value]="especialidade.nome">{{ especialidade.nome }}</option>
+            </select>
+            <small class="text-danger" *ngIf="formularioUsuario.controls.especialidade.touched && formularioUsuario.controls.especialidade.invalid">
+              A especialidade é obrigatória para plantonistas.
+            </small>
           </div>
 
           <div class="col-12 d-flex justify-content-end gap-2">
@@ -156,6 +164,7 @@
               <th scope="col">PERFIL</th>
               <th scope="col">EQUIPE</th>
               <th scope="col">SETOR</th>
+              <th scope="col">ESPECIALIDADE</th>
               <th scope="col">AÇÕES</th>
             </tr>
 
@@ -195,7 +204,8 @@
                   class="badge"
                   [ngClass]="{
                     'bg-primary': usuario.perfil === 'Administrador',
-                    'bg-success': usuario.perfil === 'Usuário'
+                    'bg-success': usuario.perfil === 'Usuário',
+                    'bg-warning text-dark': usuario.perfil === 'Plantonista'
                   }">
                   {{ usuario.perfil }}
                 </span>
@@ -208,6 +218,10 @@
 
               <td class="text-muted">
                 {{ usuario.setor }}
+              </td>
+
+              <td class="text-muted">
+                {{ usuario.perfil === 'Plantonista' ? (usuario.especialidade || '—') : '—' }}
               </td>
 
               <td>

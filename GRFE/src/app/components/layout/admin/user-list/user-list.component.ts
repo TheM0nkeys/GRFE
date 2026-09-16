@@ -18,17 +18,10 @@ export class UserListComponent {
   formularioAberto = false;
   usuarioEmEdicao: Usuario | null = null;
 
-  readonly equipes = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon'];
-  readonly setores = [
-    'Geração',
-    'Transmissão',
-    'Subestação',
-    'Manutenção Mecânica',
-    'Manutenção Elétrica',
-    'TI & Sistemas',
-    'Segurança',
-    'Civil'
-  ];
+  readonly equipes: string[] = [];
+  readonly perfis: string[] = [];
+  readonly setores: string[] = [];
+  readonly especialidades: Array<{ id: number; nome: string }> = [];
 
   constructor(private readonly formBuilder: FormBuilder) {
     this.formularioUsuario = this.formBuilder.nonNullable.group({
@@ -36,76 +29,12 @@ export class UserListComponent {
       email: ['', [Validators.required, Validators.email]],
       perfil: ['Usuário' as Usuario['perfil'], Validators.required],
       equipe: ['', Validators.required],
-      setor: ['', Validators.required]
+      setor: ['', Validators.required],
+      especialidade: ['']
     });
   }
 
-  usuarios: Usuario[] = [
-    {
-      nome: 'Carlos Mendes',
-      iniciais: 'CM',
-      email: 'admin@itaipu.gov.br',
-      perfil: 'Administrador',
-      equipe: 'Alpha',
-      setor: 'TI & Sistemas'
-    },
-    {
-      nome: 'Ana Rodrigues',
-      iniciais: 'AR',
-      email: 'ana@itaipu.gov.br',
-      perfil: 'Usuário',
-      equipe: 'Beta',
-      setor: 'Geração'
-    },
-    {
-      nome: 'Pedro Souza',
-      iniciais: 'PS',
-      email: 'pedro@itaipu.gov.br',
-      perfil: 'Usuário',
-      equipe: 'Alpha',
-      setor: 'Transmissão'
-    },
-    {
-      nome: 'Fernanda Lima',
-      iniciais: 'FL',
-      email: 'fernanda@itaipu.gov.br',
-      perfil: 'Usuário',
-      equipe: 'Gamma',
-      setor: 'Manutenção Elétrica'
-    },
-    {
-      nome: 'Rafael Torres',
-      iniciais: 'RT',
-      email: 'rafael@itaipu.gov.br',
-      perfil: 'Usuário',
-      equipe: 'Delta',
-      setor: 'Manutenção Mecânica'
-    },
-    {
-      nome: 'Juliana Castro',
-      iniciais: 'JC',
-      email: 'juliana@itaipu.gov.br',
-      perfil: 'Usuário',
-      equipe: 'Beta',
-      setor: 'Subestação'
-    },
-    {
-      nome: 'Marcos Oliveira',
-      iniciais: 'MO',
-      email: 'marcos@itaipu.gov.br',
-      perfil: 'Usuário',
-      equipe: 'Epsilon',
-      setor: 'Segurança'
-    },
-    {
-      nome: 'Lucia Ferreira',
-      iniciais: 'LF',
-      email: 'lucia@itaipu.gov.br',
-      perfil: 'Usuário',
-      equipe: 'Gamma',
-      setor: 'Civil'
-    }
-  ];
+  usuarios: Usuario[] = [];
 
   get quantidadeAdministradores(): number {
     return this.usuarios.filter(
@@ -119,6 +48,10 @@ export class UserListComponent {
     ).length;
   }
 
+  get perfilAtual(): string {
+    return this.formularioUsuario.get('perfil')?.value ?? 'Usuário';
+  }
+
   novoUsuario(): void {
     this.usuarioEmEdicao = null;
     this.formularioUsuario.reset({
@@ -126,7 +59,8 @@ export class UserListComponent {
       email: '',
       perfil: 'Usuário',
       equipe: '',
-      setor: ''
+      setor: '',
+      especialidade: ''
     });
     this.formularioAberto = true;
   }
@@ -138,7 +72,8 @@ export class UserListComponent {
       email: usuario.email,
       perfil: usuario.perfil,
       equipe: usuario.equipe,
-      setor: usuario.setor
+      setor: usuario.setor,
+      especialidade: usuario.especialidade ?? ''
     });
     this.formularioAberto = true;
   }
@@ -150,8 +85,18 @@ export class UserListComponent {
     }
 
     const dados = this.formularioUsuario.getRawValue();
+
+    if (dados.perfil === 'Plantonista' && !dados.especialidade) {
+      this.formularioUsuario.controls.especialidade.markAsTouched();
+      this.formularioUsuario.controls.especialidade.setErrors({ required: true });
+      return;
+    }
+
+    const especialidadeSelecionada = this.especialidades.find((item) => item.nome === dados.especialidade);
     const usuarioAtualizado: Usuario = {
       ...dados,
+      especialidade: dados.perfil === 'Plantonista' ? (especialidadeSelecionada?.nome ?? dados.especialidade) : undefined,
+      especialidadeId: dados.perfil === 'Plantonista' ? (especialidadeSelecionada?.id ?? null) : undefined,
       iniciais: this.gerarIniciais(dados.nome)
     };
 

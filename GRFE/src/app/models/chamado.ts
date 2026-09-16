@@ -1,5 +1,5 @@
-export type StatusChamado = 'Aberto' | 'Em andamento' | 'Resolvido';
-export type SeveridadeChamado = 'Crítica' | 'Alta' | 'Média' | 'Baixa';
+export type StatusChamado = 'Aberto' | 'Em andamento' | 'Resolvido' | 'Sem status';
+export type SeveridadeChamado = 'Crítica' | 'Alta' | 'Média' | 'Baixa' | 'Sem severidade';
 
 export interface AtualizacaoChamado {
 	autor: string;
@@ -13,10 +13,13 @@ export interface Chamado {
 	setor: string;
 	severidade: SeveridadeChamado;
 	responsavel: string;
+	usuarioResponsavelId?: number | null;
 	data: string;
 	status: StatusChamado;
 	especialidade: string;
+	especialidadeId?: number | null;
 	plantonista: string;
+	plantonistaId?: number | null;
 	motivo: string;
 	descricao: string;
 	updates: number;

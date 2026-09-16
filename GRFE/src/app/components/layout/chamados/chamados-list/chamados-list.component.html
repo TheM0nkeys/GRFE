@@ -10,12 +10,20 @@
 		</a>
 	</header>
 
-	<section class="sector-summary" aria-label="Incidentes por setor">
-		<div class="summary-card" *ngFor="let item of [{ nome: 'Geração', total: 2 }, { nome: 'Transmissão', total: 2 }, { nome: 'Subestação', total: 2 }, { nome: 'Manutenção Mecânica', total: 2 }, { nome: 'Manutenção Elétrica', total: 2 }, { nome: 'TI & Sistemas', total: 3 }, { nome: 'Segurança', total: 1 }, { nome: 'Civil', total: 1 }]">
+	<section class="sector-summary" aria-label="Incidentes por setor" *ngIf="resumoPorSetor.length; else semResumo">
+		<div class="summary-card" *ngFor="let item of resumoPorSetor">
 			<strong>{{ item.total }}</strong>
 			<span>{{ item.nome }}</span>
 		</div>
 	</section>
+	<ng-template #semResumo>
+		<section class="sector-summary" aria-label="Sem incidentes por setor">
+			<div class="summary-card empty-summary">
+				<strong>0</strong>
+				<span>Sem dados</span>
+			</div>
+		</section>
+	</ng-template>
 
 	<section class="filters card">
 		<div class="search-field">

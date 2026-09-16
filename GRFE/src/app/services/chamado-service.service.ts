@@ -9,10 +9,9 @@ import { HistoricoAcionamentoResponse } from '../models/historicos';
 })
 export class ChamadoService {
 
-  private readonly apiUrl = '/api/chamados';
+  private readonly apiUrl = 'http://localhost:8080/chamados';
 
   constructor(private readonly http: HttpClient) {}
-
 
   obterChamados(): Observable<Chamado[]> {
     return this.http.get<ChamadoResponse[]>(this.apiUrl).pipe(
@@ -52,14 +51,17 @@ export class ChamadoService {
     return {
       id: String(chamado.id),
       titulo: chamado.numeroIncidente || `Chamado ${chamado.id}`,
-      setor: '',
-      severidade: 'Média',
-      responsavel: chamado.usuarioResponsavelNome,
-      data: chamado.dataHoraAcionamento.slice(0, 10),
-      especialidade: chamado.especialidadeNome,
-      plantonista: chamado.plantonistaNome,
-      motivo: chamado.motivo,
-      descricao: chamado.motivo,
+      setor: chamado.especialidadeNome ?? 'Sem setor',
+      severidade: 'Sem severidade',
+      responsavel: chamado.usuarioResponsavelNome ?? 'Sem responsável',
+      usuarioResponsavelId: chamado.usuarioResponsavelId ?? null,
+      data: this.safeDate(chamado.dataHoraAcionamento),
+      especialidade: chamado.especialidadeNome ?? 'Sem especialidade',
+      especialidadeId: chamado.especialidadeId ?? null,
+      plantonista: chamado.plantonistaNome ?? 'Sem plantonista',
+      plantonistaId: chamado.plantonistaId ?? null,
+      motivo: chamado.motivo ?? '',
+      descricao: chamado.motivo ?? '',
       status: this.statusApiResponse(chamado.status),
       updates: 0,
       atualizacoes: []
@@ -68,30 +70,52 @@ export class ChamadoService {
 
   private apiRequest(chamado: Partial<Chamado>): unknown {
     return {
-      dataHoraAcionamento: `${chamado.data}T00:00:00`,
-      especialidadeId: this.numId(chamado.especialidade),
-      plantonistaId: this.numId(chamado.plantonista),
-      usuarioResponsavelId: this.numId(chamado.responsavel),
-      motivo: chamado.motivo,
-      numeroIncidente: chamado.titulo,
+      dataHoraAcionamento: chamado.data ? `${chamado.data}T00:00:00` : null,
+      especialidadeId: this.resolveId(chamado.especialidadeId, chamado.especialidade),
+      plantonistaId: this.resolveId(chamado.plantonistaId, chamado.plantonista),
+      usuarioResponsavelId: this.resolveId(chamado.usuarioResponsavelId, chamado.responsavel),
+      motivo: chamado.motivo ?? '',
+      numeroIncidente: chamado.titulo ?? null,
       status: this.statusParaApi(chamado.status)
     };
+  }
+
+  private safeDate(value: string | Date | undefined): string {
+    if (!value) {
+      return '';
+    }
+
+    const date = new Date(value as string);
+    return Number.isNaN(date.getTime()) ? '' : date.toISOString().slice(0, 10);
   }
 
   private apiId(id: string): string {
     return id.replace(/^#/, '');
   }
 
-  private numId(value: string | undefined): number | null {
-    const id = Number(value);
-    return Number.isFinite(id) && id > 0 ? id : null;
+  private resolveId(id: number | null | undefined, fallback: string | undefined): number | null {
+    if (typeof id === 'number' && Number.isFinite(id) && id > 0) {
+      return id;
+    }
+
+    if (typeof fallback === 'string') {
+      const numero = Number(fallback);
+      return Number.isFinite(numero) && numero > 0 ? numero : null;
+    }
+
+    return null;
   }
 
   private statusApiResponse(status: ChamadoResponse['status']): Chamado['status'] {
-    return status === 'ABERTO' ? 'Aberto' : status === 'EM_ANDAMENTO' ? 'Em andamento' : 'Resolvido';
+    if (status === 'ABERTO') return 'Aberto';
+    if (status === 'EM_ANDAMENTO') return 'Em andamento';
+    if (status === 'FECHADO') return 'Resolvido';
+    return 'Sem status';
   }
 
   private statusParaApi(status: Chamado['status'] | undefined): ChamadoResponse['status'] {
-    return status === 'Aberto' ? 'ABERTO' : status === 'Em andamento' ? 'EM_ANDAMENTO' : 'FECHADO';
+    if (status === 'Aberto') return 'ABERTO';
+    if (status === 'Em andamento') return 'EM_ANDAMENTO';
+    return 'FECHADO';
   }
 }

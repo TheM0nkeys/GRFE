@@ -4,11 +4,11 @@
   </header>
 
   <section class="metric-grid">
-    <div class="metric-card"><span>Total de chamados</span><strong>{{ total }}</strong><small>15 ocorrências registradas</small></div>
-    <div class="metric-card warning"><span>Abertos</span><strong>{{ abertos }}</strong><small>Aguardando atendimento</small></div>
-    <div class="metric-card info"><span>Em andamento</span><strong>{{ andamento }}</strong><small>Em acompanhamento</small></div>
-    <div class="metric-card success"><span>Resolvidos</span><strong>{{ resolvidos }}</strong><small>Atendimento concluído</small></div>
-    <div class="metric-card danger"><span>Críticos</span><strong>{{ criticos }}</strong><small>Exigem prioridade</small></div>
+    <div class="metric-card"><span>Total de chamados</span><strong>{{ total }}</strong><small>{{ total === 1 ? '1 ocorrência registrada' : total + ' ocorrências registradas' }}</small></div>
+    <div class="metric-card warning"><span>Abertos</span><strong>{{ abertos }}</strong><small>{{ abertos === 0 ? 'Nenhum em aberto' : 'Aguardando atendimento' }}</small></div>
+    <div class="metric-card info"><span>Em andamento</span><strong>{{ andamento }}</strong><small>{{ andamento === 0 ? 'Nenhum em andamento' : 'Em acompanhamento' }}</small></div>
+    <div class="metric-card success"><span>Resolvidos</span><strong>{{ resolvidos }}</strong><small>{{ resolvidos === 0 ? 'Nenhum resolvido' : 'Atendimento concluído' }}</small></div>
+    <div class="metric-card danger"><span>Críticos</span><strong>{{ criticos }}</strong><small>{{ criticos === 0 ? 'Nenhum crítico' : 'Exigem prioridade' }}</small></div>
   </section>
 
   <section class="dashboard-grid">

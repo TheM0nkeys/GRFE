@@ -18,9 +18,12 @@ export class ChamadoDetailComponent {
   modo: 'criar' | 'editar' = 'criar';
   salvando = false;
 
-  readonly setores = ['Geração', 'Transmissão', 'Subestação', 'Manutenção Mecânica', 'Manutenção Elétrica', 'TI & Sistemas', 'Segurança', 'Civil'];
+  readonly setores: string[] = [];
   readonly severidades = ['Crítica', 'Alta', 'Média', 'Baixa'] as const;
   readonly statuses = ['Aberto', 'Em andamento', 'Resolvido'] as const;
+  readonly usuariosDisponiveis: Array<{ id: number; nome: string }> = [];
+  readonly especialidadesDisponiveis: Array<{ id: number; nome: string }> = [];
+  readonly plantonistasDisponiveis: Array<{ id: number; nome: string; especialidadeId: number; especialidadeNome: string }> = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -70,10 +73,13 @@ export class ChamadoDetailComponent {
           setor: this.chamado.setor,
           severidade: this.chamado.severidade,
           responsavel: this.chamado.responsavel,
+          usuarioResponsavelId: this.chamado.usuarioResponsavelId ?? null,
           data: this.chamado.data,
           status: this.chamado.status,
           especialidade: this.chamado.especialidade,
+          especialidadeId: this.chamado.especialidadeId ?? null,
           plantonista: this.chamado.plantonista,
+          plantonistaId: this.chamado.plantonistaId ?? null,
           motivo: this.chamado.motivo,
           descricao: this.chamado.descricao
         })
@@ -100,14 +106,61 @@ export class ChamadoDetailComponent {
     this.router.navigate(['/navbar/chamados']);
   }
 
+  onResponsavelChange(): void {
+    if (!this.chamado) {
+      return;
+    }
+
+    const responsavel = this.usuariosDisponiveis.find((item) => item.id === this.chamado?.usuarioResponsavelId);
+    this.chamado.responsavel = responsavel?.nome ?? '';
+  }
+
+  onPlantonistaChange(): void {
+    if (!this.chamado) {
+      return;
+    }
+
+    const plantonista = this.plantonistasDisponiveis.find((item) => item.id === this.chamado?.plantonistaId);
+    if (!plantonista) {
+      return;
+    }
+
+    this.chamado.plantonista = plantonista.nome;
+    this.chamado.especialidadeId = plantonista.especialidadeId;
+    this.chamado.especialidade = plantonista.especialidadeNome;
+  }
+
+  onEspecialidadeChange(): void {
+    if (!this.chamado) {
+      return;
+    }
+
+    const especialidade = this.especialidadesDisponiveis.find((item) => item.id === this.chamado?.especialidadeId);
+    this.chamado.especialidade = especialidade?.nome ?? this.chamado.especialidade ?? '';
+  }
+
   private camposInvalidos(form: NgForm): string[] {
     return Object.keys(form.controls).filter((nome) => form.controls[nome].invalid);
   }
 
   private novoChamado(): Chamado {
     return {
-      id: '', titulo: '', setor: 'TI & Sistemas', severidade: 'Média', responsavel: '', data: new Date().toISOString().slice(0, 10),
-      status: 'Aberto', especialidade: '', plantonista: '', motivo: '', descricao: '', updates: 0, atualizacoes: []
+      id: '',
+      titulo: '',
+      setor: 'Sem setor',
+      severidade: 'Média',
+      responsavel: '',
+      usuarioResponsavelId: null,
+      data: new Date().toISOString().slice(0, 10),
+      status: 'Aberto',
+      especialidade: 'Sem especialidade',
+      especialidadeId: null,
+      plantonista: 'Sem plantonista',
+      plantonistaId: null,
+      motivo: '',
+      descricao: '',
+      updates: 0,
+      atualizacoes: []
     };
   }
 
