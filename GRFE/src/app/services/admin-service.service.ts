@@ -7,6 +7,8 @@ export interface AdminItem {
   id: number;
   nome: string;
   descricao?: string;
+  divisaoId?: number;
+  departamentoId?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -31,12 +33,36 @@ export class AdminService {
     return this.http.delete<void>(`${this.apiUrl}/departamentos/${id}`);
   }
 
+  listarDivisoes(): Observable<AdminItem[]> {
+    return this.http.get<AdminItem[]>(`${this.apiUrl}/divisoes`);
+  }
+
+  criarDivisao(dados: { nome: string }): Observable<AdminItem> {
+    return this.http.post<AdminItem>(`${this.apiUrl}/divisoes`, dados);
+  }
+
+  atualizarDivisao(id: number, dados: { nome: string }): Observable<AdminItem> {
+    return this.http.put<AdminItem>(`${this.apiUrl}/divisoes/${id}`, dados);
+  }
+
+  excluirDivisao(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/divisoes/${id}`);
+  }
+
   listarEscalas(): Observable<Escala[]> {
     return this.http.get<Escala[]>(`${this.apiUrl}/escalas`);
   }
 
   listarEspecialidades(): Observable<AdminItem[]> {
     return this.http.get<AdminItem[]>(`${this.apiUrl}/especialidades`);
+  }
+
+  atualizarEspecialidade(id: number, dados: { nome: string; descricao?: string; divisaoId: number; departamentoId: number }): Observable<AdminItem> {
+    return this.http.put<AdminItem>(`${this.apiUrl}/especialidades/${id}`, dados);
+  }
+
+  excluirEspecialidade(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/especialidades/${id}`);
   }
 
   listarFuncionarios(): Observable<AdminItem[]> {
@@ -55,35 +81,7 @@ export class AdminService {
     return this.http.delete<void>(`${this.apiUrl}/escalas/${id}`);
   }
 
-  listarEquipes(): Observable<AdminItem[]> {
-    return this.http.get<AdminItem[]>(`${this.apiUrl}/equipes`);
-  }
-
-  criarEquipe(dados: { nome: string }): Observable<AdminItem> {
-    return this.http.post<AdminItem>(`${this.apiUrl}/equipes`, dados);
-  }
-
-  atualizarEquipe(id: number, dados: { nome: string }): Observable<AdminItem> {
-    return this.http.put<AdminItem>(`${this.apiUrl}/equipes/${id}`, dados);
-  }
-
-  excluirEquipe(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/equipes/${id}`);
-  }
-
-  listarPerfis(): Observable<AdminItem[]> {
-    return this.http.get<AdminItem[]>(`${this.apiUrl}/perfis`);
-  }
-
-  criarPerfil(dados: { nome: string; descricao?: string }): Observable<AdminItem> {
-    return this.http.post<AdminItem>(`${this.apiUrl}/perfis`, dados);
-  }
-
-  atualizarPerfil(id: number, dados: { nome: string; descricao?: string }): Observable<AdminItem> {
-    return this.http.put<AdminItem>(`${this.apiUrl}/perfis/${id}`, dados);
-  }
-
-  excluirPerfil(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/perfis/${id}`);
+  criarEspecialidade(dados: { nome: string; descricao?: string; divisaoId: number; departamentoId: number }): Observable<AdminItem> {
+    return this.http.post<AdminItem>(`${this.apiUrl}/especialidades`, dados);
   }
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { Usuario } from '../models/usuario';
 
 export interface FuncionarioResponse {
@@ -32,12 +32,12 @@ export interface EspecialidadeResponse {
   providedIn: 'root'
 })
 export class UsuarioServiceService {
-  private readonly apiUrl = 'http://localhost:8080/';
+  private readonly apiUrl = 'http://localhost:8080';
 
   constructor(private readonly http: HttpClient) {}
 
   listarUsuarios(): Observable<Usuario[]> {
-    return this.http.get<FuncionarioResponse[]>(`${this.apiUrl}/funcionario`).pipe(
+    return this.http.get<FuncionarioResponse[]>(`${this.apiUrl}/funcionarios`).pipe(
       map((funcionarios) => funcionarios.map((funcionario) => this.toUsuario(funcionario)))
     );
   }
@@ -49,7 +49,12 @@ export class UsuarioServiceService {
   }
 
   criarUsuario(dados: Partial<Usuario>): Observable<Usuario> {
-    return this.http.post<FuncionarioResponse>(`${this.apiUrl}/funcionarios`, this.toRequest(dados)).pipe(
+    return this.http.get<FuncionarioResponse[]>(`${this.apiUrl}/funcionarios`).pipe(
+      map((funcionarios) => this.proximaMatricula(funcionarios)),
+      switchMap((matricula) => this.http.post<FuncionarioResponse>(
+        `${this.apiUrl}/funcionarios`,
+        this.toRequest({ ...dados, matricula })
+      )),
       map((funcionario) => this.toUsuario(funcionario))
     );
   }
@@ -77,7 +82,6 @@ export class UsuarioServiceService {
       iniciais: this.gerarIniciais(funcionario.nome),
       email: funcionario.email,
       perfil: 'Usuário',
-      equipe: undefined,
       setor: undefined,
       especialidade,
       especialidadeId: undefined,
@@ -91,10 +95,19 @@ export class UsuarioServiceService {
 
     return {
       nome: dados.nome ?? '',
-      matricula: dados.matricula ?? '',
+      matricula: dados.matricula?.trim() ?? '',
       email: dados.email ?? '',
       especialidadeIds
     };
+  }
+
+  private proximaMatricula(funcionarios: FuncionarioResponse[]): string {
+    const maiorMatricula = funcionarios.reduce((maior, funcionario) => {
+      const matricula = Number.parseInt(funcionario.matricula, 10);
+      return Number.isInteger(matricula) && matricula > maior ? matricula : maior;
+    }, 0);
+
+    return String(maiorMatricula + 1);
   }
 
   private gerarIniciais(nome: string): string {

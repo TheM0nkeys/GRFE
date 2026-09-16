@@ -1,15 +1,15 @@
 <main class="admin-page">
   <header class="page-header">
-    <div><span class="eyebrow">CONTROLE OPERACIONAL</span><h1>Gerenciador administrativo</h1><p>Cadastre e mantenha os dados usados pelo GRFE.</p></div>
+    <div><span class="eyebrow">CONTROLE OPERACIONAL</span><h1>Gerenciador administrativo</h1></div>
     <button type="button" class="refresh-button" (click)="carregarTudo()" [disabled]="carregando" aria-label="Atualizar dados">Atualizar</button>
   </header>
 
   <div class="error" *ngIf="erro">{{ erro }}</div>
   <nav class="tabs" aria-label="Cadastros administrativos">
+    <button type="button" [class.active]="aba === 'divisoes'" (click)="trocarAba('divisoes')">Divisões</button>
     <button type="button" [class.active]="aba === 'setores'" (click)="trocarAba('setores')">Setores</button>
+    <button type="button" [class.active]="aba === 'especialidades'" (click)="trocarAba('especialidades')">Especialidades</button>
     <button type="button" [class.active]="aba === 'escalas'" (click)="trocarAba('escalas')">Escalas</button>
-    <button type="button" [class.active]="aba === 'equipes'" (click)="trocarAba('equipes')">Equipes</button>
-    <button type="button" [class.active]="aba === 'perfis'" (click)="trocarAba('perfis')">Perfis</button>
   </nav>
 
   <section class="workspace">
@@ -17,21 +17,30 @@
       <div><span class="eyebrow">{{ editandoId === null ? 'NOVO CADASTRO' : 'EDIÇÃO' }}</span><h2>{{ editandoId === null ? 'Adicionar' : 'Editar' }} {{ aba.slice(0, -1) }}</h2></div>
       <ng-container *ngIf="aba !== 'escalas'">
         <label>Nome<input name="nome" [(ngModel)]="nome" required></label>
-        <label *ngIf="aba === 'perfis'">Descrição<textarea name="descricao" [(ngModel)]="descricao" rows="3"></textarea></label>
-        <label *ngIf="aba === 'setores'">Divisão ID<input name="divisaoId" type="number" min="1" [(ngModel)]="divisaoId"></label>
+        <label *ngIf="aba === 'especialidades'">Descrição<textarea name="descricao" [(ngModel)]="descricao" rows="3"></textarea></label>
+        <label *ngIf="aba === 'especialidades'">Divisão
+          <app-escolha-dropdown name="especialidadeDivisaoId" [options]="divisoes" [selectedId]="divisaoId" placeholder="Pesquise uma divisão" [required]="true" (selectedIdChange)="divisaoId = $event"></app-escolha-dropdown>
+        </label>
+        <label *ngIf="aba === 'especialidades'">Setor
+          <app-escolha-dropdown name="especialidadeDepartamentoId" [options]="setores" [selectedId]="departamentoId" placeholder="Pesquise um setor" [required]="true" (selectedIdChange)="departamentoId = $event"></app-escolha-dropdown>
+        </label>
+        <label *ngIf="aba === 'setores'">Divisão
+          <app-escolha-dropdown name="setorDivisaoId" [options]="divisoes" [selectedId]="divisaoId" placeholder="Pesquise uma divisão" [required]="true" (selectedIdChange)="divisaoId = $event"></app-escolha-dropdown>
+        </label>
       </ng-container>
       <ng-container *ngIf="aba === 'escalas'">
         <label>Início<input name="dataHoraInicio" type="datetime-local" [(ngModel)]="escala.dataHoraInicio" required></label>
         <label>Fim<input name="dataHoraFim" type="datetime-local" [(ngModel)]="escala.dataHoraFim" required></label>
-        <label>Especialidade<select name="especialidadeId" [(ngModel)]="escala.especialidadeId" required><option [ngValue]="0" disabled>Selecione</option><option *ngFor="let item of especialidades" [ngValue]="item.id">{{ item.nome }}</option></select></label>
-        <label>Funcionário<select name="funcionarioId" [(ngModel)]="escala.funcionarioId" required><option [ngValue]="0" disabled>Selecione</option><option *ngFor="let item of funcionarios" [ngValue]="item.id">{{ item.nome }}</option></select></label>
+        <label>Especialidade<app-escolha-dropdown name="especialidadeId" [options]="especialidades" [selectedId]="escala.especialidadeId || null" placeholder="Pesquise uma especialidade" [required]="true" (selectedIdChange)="escala.especialidadeId = $event || 0"></app-escolha-dropdown></label>
+        <label>Funcionário<app-escolha-dropdown name="funcionarioId" [options]="funcionarios" [selectedId]="escala.funcionarioId || null" placeholder="Pesquise um funcionário" [required]="true" (selectedIdChange)="escala.funcionarioId = $event || 0"></app-escolha-dropdown></label>
       </ng-container>
       <div class="form-actions"><button type="button" class="secondary" (click)="cancelar()">Limpar</button><button type="submit" class="primary">{{ editandoId === null ? 'Cadastrar' : 'Salvar' }}</button></div>
     </form>
 
     <section class="records">
-      <div class="records-header"><div><span class="eyebrow">DADOS DO BACKEND</span><h2>{{ aba | titlecase }}</h2></div><span class="count">{{ aba === 'setores' ? setores.length : aba === 'escalas' ? escalas.length : aba === 'equipes' ? equipes.length : perfis.length }} registros</span></div>
-      <div class="empty" *ngIf="!carregando && ((aba === 'setores' && !setores.length) || (aba === 'escalas' && !escalas.length) || (aba === 'equipes' && !equipes.length) || (aba === 'perfis' && !perfis.length))">Nenhum registro retornado pelo backend.</div>
+      <div class="records-header"><div><span class="eyebrow">DADOS DO BACKEND</span><h2>{{ aba | titlecase }}</h2></div><span class="count">{{ aba === 'divisoes' ? divisoes.length : aba === 'setores' ? setores.length : aba === 'especialidades' ? especialidades.length : escalas.length }} registros</span></div>
+      <div class="empty" *ngIf="!carregando && ((aba === 'divisoes' && !divisoes.length) || (aba === 'setores' && !setores.length) || (aba === 'especialidades' && !especialidades.length) || (aba === 'escalas' && !escalas.length))">Nenhum registro retornado pelo backend.</div>
+      <ng-container *ngIf="aba === 'divisoes'"><div class="record" *ngFor="let item of divisoes"><div><strong>{{ item.nome }}</strong></div><div class="record-actions"><button type="button" (click)="editar(item)">Editar</button><button type="button" class="danger" (click)="excluir(item)">Excluir</button></div></div></ng-container>
       <ng-container *ngIf="aba === 'escalas'">
         <div class="record" *ngFor="let item of escalas">
           <div><strong>{{ item.especialidadeNome }}</strong><small>{{ item.funcionarioNome }} · {{ item.dataHoraInicio | date:'dd/MM/yyyy HH:mm' }} até {{ item.dataHoraFim | date:'dd/MM/yyyy HH:mm' }}</small></div>
@@ -41,12 +50,7 @@
       <ng-container *ngIf="aba === 'setores'">
         <div class="record" *ngFor="let item of setores"><div><strong>{{ item.nome }}</strong><small>{{ item.descricao || 'Sem descrição' }}</small></div><div class="record-actions"><button type="button" (click)="editar(item)">Editar</button><button type="button" class="danger" (click)="excluir(item)">Excluir</button></div></div>
       </ng-container>
-      <ng-container *ngIf="aba === 'equipes'">
-        <div class="record" *ngFor="let item of equipes"><div><strong>{{ item.nome }}</strong><small>{{ item.descricao || 'Sem descrição' }}</small></div><div class="record-actions"><button type="button" (click)="editar(item)">Editar</button><button type="button" class="danger" (click)="excluir(item)">Excluir</button></div></div>
-      </ng-container>
-      <ng-container *ngIf="aba === 'perfis'">
-        <div class="record" *ngFor="let item of perfis"><div><strong>{{ item.nome }}</strong><small>{{ item.descricao || 'Sem descrição' }}</small></div><div class="record-actions"><button type="button" (click)="editar(item)">Editar</button><button type="button" class="danger" (click)="excluir(item)">Excluir</button></div></div>
-      </ng-container>
+      <ng-container *ngIf="aba === 'especialidades'"><div class="record" *ngFor="let item of especialidades"><div><strong>{{ item.nome }}</strong><small>{{ item.descricao || 'Sem descrição' }}</small></div><div class="record-actions"><button type="button" (click)="editar(item)">Editar</button><button type="button" class="danger" (click)="excluir(item)">Excluir</button></div></div></ng-container>
     </section>
   </section>
 </main>

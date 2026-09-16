@@ -1,4 +1,4 @@
-export type PerfilUsuario = 'Administrador' | 'Usuário' | 'Plantonista';
+export type PerfilUsuario = 'Administrador' | 'Usuário';
 
 export interface Usuario {
   id?: number;
@@ -6,7 +6,6 @@ export interface Usuario {
   iniciais: string;
   email: string;
   perfil: PerfilUsuario;
-  equipe?: string;
   setor?: string;
   especialidade?: string;
   especialidadeId?: number | null;

@@ -79,8 +79,8 @@ export class RelatorioService {
       ['INCIDENTES POR SEMANA', 'TOTAL'].map((valor) => this.csvCell(valor)).join(';'),
       ...dados.incidentesPorSemana.labels.map((semana, index) => [semana, dados.incidentesPorSemana.valores[index]].map((valor) => this.csvCell(valor)).join(';')),
       '',
-      ['SOBREAVISO POR COLABORADOR', 'EQUIPE', 'SETOR', 'TOTAL DE PLANTÕES', 'MAIOR SEQUÊNCIA', 'ALERTA'].map((valor) => this.csvCell(valor)).join(';'),
-      ...dados.sobreaviso.map((colaborador) => [colaborador.nome, colaborador.equipe, colaborador.setor, colaborador.totalPlantoes, colaborador.maiorSequencia, colaborador.alerta].map((valor) => this.csvCell(valor)).join(';'))
+      ['SOBREAVISO POR COLABORADOR', 'SETOR', 'TOTAL DE PLANTÕES', 'MAIOR SEQUÊNCIA', 'ALERTA'].map((valor) => this.csvCell(valor)).join(';'),
+      ...dados.sobreaviso.map((colaborador) => [colaborador.nome, colaborador.setor, colaborador.totalPlantoes, colaborador.maiorSequencia, colaborador.alerta].map((valor) => this.csvCell(valor)).join(';'))
     ];
 
     const blob = new Blob(['\ufeff' + linhas.join('\r\n')], { type: 'text/csv;charset=utf-8;' });

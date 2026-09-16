@@ -34,7 +34,6 @@ export interface RelatorioDados {
 export interface ColaboradorSobreaviso {
   iniciais: string;
   nome: string;
-  equipe: string;
   setor: string;
   totalPlantoes: number;
   maiorSequencia: number;

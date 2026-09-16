@@ -36,10 +36,10 @@
 			</div>
 			<div class="table-responsive">
 				<table class="table align-middle mb-0">
-					<thead><tr><th>COLABORADOR</th><th>EQUIPE</th><th>SETOR</th><th>TOTAL DE PLANTÕES</th><th>MAIOR SEQUÊNCIA CONSECUTIVA</th><th>ALERTA</th></tr></thead>
+					<thead><tr><th>COLABORADOR</th><th>SETOR</th><th>TOTAL DE PLANTÕES</th><th>MAIOR SEQUÊNCIA CONSECUTIVA</th><th>ALERTA</th></tr></thead>
 					<tbody>
 						<tr *ngFor="let colaborador of relatorio.sobreaviso">
-							<td><span class="avatar">{{ colaborador.iniciais }}</span>{{ colaborador.nome }}</td><td>{{ colaborador.equipe }}</td><td class="muted">{{ colaborador.setor }}</td><td><strong>{{ colaborador.totalPlantoes }}</strong></td><td><span class="sequence-marker"></span>{{ colaborador.maiorSequencia }}x</td><td><span class="status-pill">✓ {{ colaborador.alerta }}</span></td>
+							<td><span class="avatar">{{ colaborador.iniciais }}</span>{{ colaborador.nome }}</td><td class="muted">{{ colaborador.setor }}</td><td><strong>{{ colaborador.totalPlantoes }}</strong></td><td><span class="sequence-marker"></span>{{ colaborador.maiorSequencia }}x</td><td><span class="status-pill">✓ {{ colaborador.alerta }}</span></td>
 						</tr>
 					</tbody>
 				</table>
