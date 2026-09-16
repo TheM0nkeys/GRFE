@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Chamado } from '../../../../models/chamado';
-import { DashServiceService } from '../../../../services/dash-service.service';
+import { Chamado } from '../../../models/chamado';
+import { DashServiceService } from '../../../services/dash-service.service';
 
 @Component({
   selector: 'app-dash-geral',

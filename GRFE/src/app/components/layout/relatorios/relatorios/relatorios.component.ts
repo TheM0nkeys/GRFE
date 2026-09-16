@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { RelatorioDados } from '../../../../../models/relatorio';
-import { RelatorioService } from '../../../../../services/relatorio-service.service';
+import { RelatorioDados } from '../../../../models/relatorio';
+import { RelatorioService } from '../../../../services/relatorio-service.service';
 
 @Component({
   selector: 'app-relatorios',

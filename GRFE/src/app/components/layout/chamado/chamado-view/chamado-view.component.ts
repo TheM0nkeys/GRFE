@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ChamadoService } from '../../../../../services/chamado-service.service';
-import { Chamado } from '../../../../../models/chamado';
+import { ChamadoService } from '../../../../services/chamado-service.service';
+import { Chamado } from '../../../../models/chamado';
 
 @Component({
   selector: 'app-chamado-view',

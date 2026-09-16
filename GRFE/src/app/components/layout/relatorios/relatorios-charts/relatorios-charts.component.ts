@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
-import { RelatorioDados } from '../../../../../models/relatorio';
-import { RelatorioService } from '../../../../../services/relatorio-service.service';
+import { RelatorioDados } from '../../../../models/relatorio';
+import { RelatorioService } from '../../../../services/relatorio-service.service';
 
 Chart.register(...registerables);
 

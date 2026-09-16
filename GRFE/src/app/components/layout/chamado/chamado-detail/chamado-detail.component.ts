@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Chamado } from '../../../../../models/chamado';
-import { ChamadoService } from '../../../../../services/chamado-service.service';
+import { Chamado } from '../../../../models/chamado';
+import { ChamadoService } from '../../../../services/chamado-service.service';
 import Swal from 'sweetalert2';
 
 @Component({

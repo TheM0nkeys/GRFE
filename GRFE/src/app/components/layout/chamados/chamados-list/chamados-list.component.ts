@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MdbRippleModule } from 'mdb-angular-ui-kit/ripple';
-import { Chamado, SeveridadeChamado, StatusChamado } from '../../../../../models/chamado';
-import { ChamadoService } from '../../../../../services/chamado-service.service';
+import { Chamado, SeveridadeChamado, StatusChamado } from '../../../../models/chamado';
+import { ChamadoService } from '../../../../services/chamado-service.service';
 
 @Component({
   selector: 'app-chamados-list',

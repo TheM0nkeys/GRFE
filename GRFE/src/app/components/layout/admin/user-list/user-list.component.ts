@@ -1,147 +1,78 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MdbRippleModule } from 'mdb-angular-ui-kit/ripple';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { Usuario } from '../../../../../models/usuario';
+import { Usuario } from '../../../../models/usuario';
+import { UsuarioServiceService } from '../../../../services/usuario-service.service';
 
 @Component({
   selector: 'app-user-list',
-  imports: [CommonModule, ReactiveFormsModule, MdbRippleModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss']
+  styleUrl: './user-list.component.scss'
 })
-export class UserListComponent {
-
-  formularioUsuario;
-
+export class UserListComponent implements OnInit {
+  usuarios: Usuario[] = [];
+  especialidades: { id: number; nome: string }[] = [];
+  carregando = false;
+  erro = '';
   formularioAberto = false;
   usuarioEmEdicao: Usuario | null = null;
+  dados: Partial<Usuario> = { nome: '', matricula: '', email: '', especialidadeIds: [] };
 
-  readonly equipes: string[] = [];
-  readonly perfis: string[] = [];
-  readonly setores: string[] = [];
-  readonly especialidades: Array<{ id: number; nome: string }> = [];
+  constructor(private readonly usuarioService: UsuarioServiceService) {}
 
-  constructor(private readonly formBuilder: FormBuilder) {
-    this.formularioUsuario = this.formBuilder.nonNullable.group({
-      nome: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      perfil: ['Usuário' as Usuario['perfil'], Validators.required],
-      equipe: ['', Validators.required],
-      setor: ['', Validators.required],
-      especialidade: ['']
-    });
+  ngOnInit(): void {
+    this.carregar();
   }
 
-  usuarios: Usuario[] = [];
-
-  get quantidadeAdministradores(): number {
-    return this.usuarios.filter(
-      usuario => usuario.perfil === 'Administrador'
-    ).length;
-  }
-
-  get quantidadeUsuarios(): number {
-    return this.usuarios.filter(
-      usuario => usuario.perfil === 'Usuário'
-    ).length;
-  }
-
-  get perfilAtual(): string {
-    return this.formularioUsuario.get('perfil')?.value ?? 'Usuário';
+  carregar(): void {
+    this.carregando = true;
+    this.erro = '';
+    this.usuarioService.listarUsuarios().subscribe({ next: (usuarios) => { this.usuarios = usuarios; this.carregando = false; }, error: (error) => this.mostrarErro(error) });
+    this.usuarioService.listarEspecialidades().subscribe({ next: (especialidades) => this.especialidades = especialidades, error: (error) => this.mostrarErro(error) });
   }
 
   novoUsuario(): void {
     this.usuarioEmEdicao = null;
-    this.formularioUsuario.reset({
-      nome: '',
-      email: '',
-      perfil: 'Usuário',
-      equipe: '',
-      setor: '',
-      especialidade: ''
-    });
+    this.dados = { nome: '', matricula: '', email: '', especialidadeIds: [] };
     this.formularioAberto = true;
   }
 
   editarUsuario(usuario: Usuario): void {
     this.usuarioEmEdicao = usuario;
-    this.formularioUsuario.setValue({
-      nome: usuario.nome,
-      email: usuario.email,
-      perfil: usuario.perfil,
-      equipe: usuario.equipe,
-      setor: usuario.setor,
-      especialidade: usuario.especialidade ?? ''
-    });
+    this.dados = { ...usuario, especialidadeIds: usuario.especialidadeIds ?? [] };
     this.formularioAberto = true;
   }
 
   salvarUsuario(): void {
-    if (this.formularioUsuario.invalid) {
-      this.formularioUsuario.markAllAsTouched();
+    if (!this.dados.nome?.trim() || !this.dados.matricula?.trim() || !this.dados.email?.trim() || !this.dados.especialidadeIds?.length) {
+      this.erro = 'Nome, matrícula, e-mail e pelo menos uma especialidade são obrigatórios.';
       return;
     }
 
-    const dados = this.formularioUsuario.getRawValue();
-
-    if (dados.perfil === 'Plantonista' && !dados.especialidade) {
-      this.formularioUsuario.controls.especialidade.markAsTouched();
-      this.formularioUsuario.controls.especialidade.setErrors({ required: true });
-      return;
-    }
-
-    const especialidadeSelecionada = this.especialidades.find((item) => item.nome === dados.especialidade);
-    const usuarioAtualizado: Usuario = {
-      ...dados,
-      especialidade: dados.perfil === 'Plantonista' ? (especialidadeSelecionada?.nome ?? dados.especialidade) : undefined,
-      especialidadeId: dados.perfil === 'Plantonista' ? (especialidadeSelecionada?.id ?? null) : undefined,
-      iniciais: this.gerarIniciais(dados.nome)
-    };
-
-    if (this.usuarioEmEdicao) {
-      const indice = this.usuarios.indexOf(this.usuarioEmEdicao);
-      this.usuarios[indice] = usuarioAtualizado;
-      this.usuarios = [...this.usuarios];
-    } else {
-      this.usuarios = [...this.usuarios, usuarioAtualizado];
-    }
-
-    this.cancelarFormulario();
-  }
-
-  cancelarFormulario(): void {
-    this.formularioAberto = false;
-    this.usuarioEmEdicao = null;
-    this.formularioUsuario.reset();
-  }
-
-  private gerarIniciais(nome: string): string {
-    return nome
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(parte => parte.charAt(0).toUpperCase())
-      .join('');
+    const operacao = this.usuarioEmEdicao?.id
+      ? this.usuarioService.atualizarUsuario(this.usuarioEmEdicao.id, this.dados)
+      : this.usuarioService.criarUsuario(this.dados);
+    operacao.subscribe({ next: () => { this.cancelar(); this.carregar(); }, error: (error) => this.mostrarErro(error) });
   }
 
   removerUsuario(usuario: Usuario): void {
-    void Swal.fire({
-      icon: 'warning',
-      title: 'Remover usuário?',
-      text: `Deseja realmente remover ${usuario.nome}?`,
-      showCancelButton: true,
-      confirmButtonText: 'Remover',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#c94444',
-      reverseButtons: true
-    }).then((resultado) => {
-      if (resultado.isConfirmed) {
-        this.usuarios = this.usuarios.filter(item => item !== usuario);
-      }
+    if (!usuario.id) return;
+    void Swal.fire({ icon: 'warning', title: 'Remover usuário?', text: `Deseja remover ${usuario.nome}?`, showCancelButton: true, confirmButtonText: 'Remover', cancelButtonText: 'Cancelar' }).then((resultado) => {
+      if (resultado.isConfirmed) this.usuarioService.excluirUsuario(usuario.id!).subscribe({ next: () => this.carregar(), error: (error) => this.mostrarErro(error) });
     });
   }
 
+  cancelar(): void {
+    this.formularioAberto = false;
+    this.usuarioEmEdicao = null;
+    this.dados = { nome: '', matricula: '', email: '', especialidadeIds: [] };
+  }
+
+  private mostrarErro(error: { error?: { mensagem?: string }; message?: string }): void {
+    this.carregando = false;
+    this.erro = error.error?.mensagem ?? error.message ?? 'Não foi possível carregar os usuários.';
+  }
 }

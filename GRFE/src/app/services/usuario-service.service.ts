@@ -37,7 +37,7 @@ export class UsuarioServiceService {
   constructor(private readonly http: HttpClient) {}
 
   listarUsuarios(): Observable<Usuario[]> {
-    return this.http.get<FuncionarioResponse[]>(`${this.apiUrl}/funcionarios`).pipe(
+    return this.http.get<FuncionarioResponse[]>(`${this.apiUrl}/funcionario`).pipe(
       map((funcionarios) => funcionarios.map((funcionario) => this.toUsuario(funcionario)))
     );
   }
