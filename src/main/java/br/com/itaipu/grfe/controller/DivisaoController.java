@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.DivisaoResponse;
 import br.com.itaipu.grfe.service.DivisaoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class DivisaoController {
 
     @PostMapping
     public ResponseEntity<DivisaoResponse> criar(@RequestBody @Valid DivisaoRequest request) {
-        return ResponseEntity.ok(divisaoService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(divisaoService.criar(request));
     }
 
     @PutMapping("/{id}")

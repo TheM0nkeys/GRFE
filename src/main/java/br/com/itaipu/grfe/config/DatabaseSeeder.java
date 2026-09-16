@@ -42,8 +42,6 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
 
-        // Impede de cadastrar tudo novamente
-        // toda vez que você iniciar o projeto
         if (divisaoRepository.count() > 0) {
             System.out.println("Banco já possui dados. Seeder ignorado.");
             return;

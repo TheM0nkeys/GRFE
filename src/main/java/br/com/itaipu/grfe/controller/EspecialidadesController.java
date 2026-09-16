@@ -5,6 +5,7 @@ import br.com.itaipu.grfe.dto.response.EspecialidadeResponse;
 import br.com.itaipu.grfe.service.EspecialidadesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class EspecialidadesController {
 
     @PostMapping
     public ResponseEntity<EspecialidadeResponse> criar(@RequestBody @Valid EspecialidadesRequest request) {
-        return ResponseEntity.ok(especialidadesService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(especialidadesService.criar(request));
     }
 
     @PutMapping("/{id}")
