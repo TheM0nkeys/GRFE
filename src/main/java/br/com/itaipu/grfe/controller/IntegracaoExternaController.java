@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/teste-feign")
-public class FeignTesteController {
+@RequestMapping("/integracao/posts")
+public class IntegracaoExternaController {
 
     private final JsonPlaceholderClient jsonPlaceholderClient;
 
-    public FeignTesteController(JsonPlaceholderClient jsonPlaceholderClient) {
+    public IntegracaoExternaController(JsonPlaceholderClient jsonPlaceholderClient) {
         this.jsonPlaceholderClient = jsonPlaceholderClient;
     }
 

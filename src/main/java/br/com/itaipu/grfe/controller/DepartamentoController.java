@@ -34,7 +34,8 @@ public class DepartamentoController {
 
     @PostMapping
     public ResponseEntity<DepartamentoResponse> criar(@RequestBody @Valid DepartamentoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(departamentoService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(departamentoService.criar(request));
     }
 
     @PutMapping("/{id}")

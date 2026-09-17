@@ -34,7 +34,8 @@ public class EscalaController {
 
     @PostMapping
     public ResponseEntity<EscalaResponse> criar(@RequestBody @Valid EscalaRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(escalaService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(escalaService.criar(request));
     }
 
     @PutMapping("/{id}")

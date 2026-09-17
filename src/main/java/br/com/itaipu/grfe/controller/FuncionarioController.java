@@ -34,7 +34,8 @@ public class FuncionarioController {
 
     @PostMapping
     public ResponseEntity<FuncionarioResponse> criar(@RequestBody @Valid FuncionarioRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(funcionarioService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(funcionarioService.criar(request));
     }
 
     @PutMapping("/{id}")

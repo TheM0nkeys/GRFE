@@ -7,11 +7,27 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.dao.DataIntegrityViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErroResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex) {
+
+        ErroResponse erro = ErroResponse.of(
+                HttpStatus.CONFLICT.value(),
+                "A operação não pode ser realizada porque o registro possui dados relacionados."
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
+    }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<ErroResponse> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex) {
@@ -42,10 +58,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErroResponse> handleGenericException(Exception ex) {
+
+        log.error("Erro inesperado na aplicação", ex);
+
         ErroResponse erro = ErroResponse.of(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Erro interno inesperado"
         );
+
         return ResponseEntity.internalServerError().body(erro);
     }
 

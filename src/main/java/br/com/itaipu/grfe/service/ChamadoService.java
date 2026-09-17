@@ -119,6 +119,18 @@ public class ChamadoService {
                     return new EntidadeNaoEncontradaException("Plantonista não encontrado: " + request.plantonistaId());
                 });
 
+        if (!plantonista.getEspecialidades().contains(especialidade)) {
+            log.warn(
+                    "Plantonista sem especialidade: plantonistaId={}, especialidadeId={}",
+                    plantonista.getId(),
+                    especialidade.getId()
+            );
+
+            throw new IllegalArgumentException(
+                    "O plantonista informado não possui a especialidade do chamado."
+            );
+        }
+
         Funcionario usuarioResponsavel = funcionarioRepository.findById(request.usuarioResponsavelId())
                 .orElseThrow(() -> {
                     log.warn("Usuário responsável não encontrado ao vincular acionamento: usuarioResponsavelId={}", request.usuarioResponsavelId());

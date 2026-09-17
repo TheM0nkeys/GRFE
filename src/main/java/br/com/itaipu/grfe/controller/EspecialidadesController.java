@@ -34,7 +34,8 @@ public class EspecialidadesController {
 
     @PostMapping
     public ResponseEntity<EspecialidadeResponse> criar(@RequestBody @Valid EspecialidadesRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(especialidadesService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(especialidadesService.criar(request));
     }
 
     @PutMapping("/{id}")

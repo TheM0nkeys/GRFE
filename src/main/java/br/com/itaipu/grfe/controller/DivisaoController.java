@@ -34,7 +34,8 @@ public class DivisaoController {
 
     @PostMapping
     public ResponseEntity<DivisaoResponse> criar(@RequestBody @Valid DivisaoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(divisaoService.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(divisaoService.criar(request));
     }
 
     @PutMapping("/{id}")
