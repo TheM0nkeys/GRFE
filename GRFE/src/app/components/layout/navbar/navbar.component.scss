@@ -3,11 +3,12 @@
   top: 15px;
   left: 15px;
   z-index: 1050;
+  animation: menu-enter .45s cubic-bezier(.22, 1, .36, 1) both;
 }
 
 /* Botão base */
 .btn-dots-animated {
-  background: transparent;
+  background: #fff;
   border: none;
   cursor: pointer;
   padding: 8px;
@@ -15,16 +16,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 8px 22px rgba(0, 59, 92, .16);
+  transition: background-color 0.3s ease, transform .25s ease, box-shadow .25s ease;
 }
 
 .btn-dots-animated:hover {
-  background-color: rgba(0, 0, 0, 0.08); /* Efeito hover discreto em fundo claro */
+  background-color: var(--itaipu-sky);
+  box-shadow: 0 10px 26px rgba(53, 169, 201, .22);
+  transform: translateY(-2px);
 }
 
 /* Estilo das bolinhas do SVG (Cor ajustada para escuro) */
 .dots-icon .dot {
-  fill: #333333; /* Mudado de #ffffff para #333333 para aparecer no fundo branco */
+  fill: #7e57c2;
   transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6),
               r 0.3s ease,
               rx 0.3s ease,
@@ -65,6 +69,7 @@
   padding: 0.5rem 0;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  border: 1px solid #d9e2e8;
 }
 
 .custom-dropdown-menu.show {
@@ -80,6 +85,22 @@
 .custom-dropdown-menu .logout-item:hover {
   background-color: rgba(255, 0, 0, 0.12);
   color: red;
+}
+
+.custom-dropdown-menu .dropdown-item {
+  color: #183044;
+  transition: background-color .2s ease, color .2s ease, padding-left .2s ease;
+}
+
+.custom-dropdown-menu .dropdown-item:hover {
+  background-color: var(--itaipu-sky);
+  color: #007bc2;
+  padding-left: 1.5rem;
+}
+
+@keyframes menu-enter {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Empurra o conteúdo para não ficar sob o botão fixo */
