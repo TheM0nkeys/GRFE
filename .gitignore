@@ -10,11 +10,17 @@
 # ==========================================
 # Compilação e binários
 *.class
+HELP.md
 target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 build/
 .gradle/
 out/
 
+### STS ###
+.apt_generated
 # Arquivos de log e empacotamento
 *.log
 *.jar
@@ -25,7 +31,11 @@ out/
 .idea/
 *.iml
 .classpath
+.factorypath
 .project
+.settings
+.springBeans
+.sts4-cache
 .settings/
 
 # ==========================================
@@ -34,10 +44,22 @@ out/
 # Dependências (MUITO IMPORTANTE: nunca suba essa pasta)
 node_modules/
 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.ipr
 # Arquivos de build do Angular
 dist/
 .angular/
 
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+!**/src/main/**/build/
+!**/src/test/**/build/
 # Logs e diagnósticos do Node/NPM
 npm-debug.log*
 yarn-debug.log*
