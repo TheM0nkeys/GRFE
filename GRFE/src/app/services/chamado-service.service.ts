@@ -25,7 +25,7 @@ export class ChamadoService {
     );
   }
 
-  criarChamado(dados: Omit<Chamado, 'id' | 'atualizacoes' | 'updates'>): Observable<Chamado> {
+  criarChamado(dados: Omit<Chamado, 'id' | 'atualizacoes' | 'updates' | 'severidade'>): Observable<Chamado> {
     return this.http.post<ChamadoResponse>(this.apiUrl, this.apiRequest(dados)).pipe(
       map((chamado) => this.apiResponse(chamado))
     );
@@ -35,6 +35,10 @@ export class ChamadoService {
     return this.http.put<ChamadoResponse>(`${this.apiUrl}/${this.apiId(chamadoAtualizado.id)}`, this.apiRequest(chamadoAtualizado)).pipe(
       map((chamado) => this.apiResponse(chamado))
     );
+  }
+
+  excluirChamado(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${this.apiId(id)}`);
   }
 
   obterHistorico(id: string): Observable<Chamado['atualizacoes']> {
@@ -52,7 +56,7 @@ export class ChamadoService {
       id: String(chamado.id),
       titulo: chamado.numeroIncidente || `Chamado ${chamado.id}`,
       setor: chamado.especialidadeNome ?? 'Sem setor',
-      severidade: 'Sem severidade',
+      severidade: 'Média',
       responsavel: chamado.usuarioResponsavelNome ?? 'Sem responsável',
       usuarioResponsavelId: chamado.usuarioResponsavelId ?? null,
       data: this.safeDate(chamado.dataHoraAcionamento),

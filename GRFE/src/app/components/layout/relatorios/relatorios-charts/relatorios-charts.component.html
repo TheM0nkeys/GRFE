@@ -4,7 +4,14 @@
 <section class="charts-content" *ngIf="dados">
 	<div class="card chart-card trend-card">
 		<div class="card-body">
-			<h2>Tendência Mensal — 2026</h2>
+			<div class="chart-heading">
+				<h2>Tendência Mensal — {{ anoGrafico }}</h2>
+				<label class="period-filter" for="periodoGrafico">Período
+					<select id="periodoGrafico" class="form-select" [(ngModel)]="periodoSelecionado" (ngModelChange)="atualizarPeriodo()">
+						<option *ngFor="let periodo of periodos" [ngValue]="periodo.valor">{{ periodo.label }}</option>
+					</select>
+				</label>
+			</div>
 			<div class="chart-area"><canvas #tendenciaChart></canvas></div>
 		</div>
 	</div>

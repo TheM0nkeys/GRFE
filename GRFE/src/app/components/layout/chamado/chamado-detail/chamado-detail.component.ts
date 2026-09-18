@@ -4,12 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Chamado } from '../../../../models/chamado';
 import { ChamadoService } from '../../../../services/chamado-service.service';
+import { AdminItem, AdminService } from '../../../../services/admin-service.service';
+import { EscolhaDropdownComponent } from '../../../shared/escolha-dropdown/escolha-dropdown.component';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-chamado-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EscolhaDropdownComponent],
   templateUrl: './chamado-detail.component.html',
   styleUrl: './chamado-detail.component.scss'
 })
@@ -18,18 +20,20 @@ export class ChamadoDetailComponent {
   modo: 'criar' | 'editar' = 'criar';
   salvando = false;
 
-  readonly setores: string[] = [];
-  readonly severidades = ['Crítica', 'Alta', 'Média', 'Baixa'] as const;
+  setores: AdminItem[] = [];
   readonly statuses = ['Aberto', 'Em andamento', 'Resolvido'] as const;
-  readonly usuariosDisponiveis: Array<{ id: number; nome: string }> = [];
-  readonly especialidadesDisponiveis: Array<{ id: number; nome: string }> = [];
-  readonly plantonistasDisponiveis: Array<{ id: number; nome: string; especialidadeId: number; especialidadeNome: string }> = [];
+  usuariosDisponiveis: AdminItem[] = [];
+  especialidadesDisponiveis: AdminItem[] = [];
+  plantonistasDisponiveis: Array<AdminItem & { especialidadeId?: number; especialidadeNome?: string }> = [];
+  setorSelecionadoId: number | null = null;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly chamadoService: ChamadoService,
+    private readonly adminService: AdminService,
     private readonly router: Router
   ) {
+    this.carregarOpcoes();
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'novo') {
       this.modo = 'editar';
@@ -44,8 +48,19 @@ export class ChamadoDetailComponent {
       });
     } else {
       this.chamado = this.novoChamado();
-      console.log('[ChamadoDetail] Abrindo formulário de criação');
     }
+  }
+
+  private carregarOpcoes(): void {
+    this.adminService.listarSetores().subscribe({ next: (dados) => {
+      this.setores = dados;
+      this.sincronizarSetorSelecionado();
+    }});
+    this.adminService.listarEspecialidades().subscribe({ next: (dados) => this.especialidadesDisponiveis = dados });
+    this.adminService.listarFuncionarios().subscribe({ next: (dados) => {
+      this.usuariosDisponiveis = dados;
+      this.plantonistasDisponiveis = dados;
+    }});
   }
 
   salvar(form: NgForm): void {
@@ -71,7 +86,6 @@ export class ChamadoDetailComponent {
       ? this.chamadoService.criarChamado({
           titulo: this.chamado.titulo,
           setor: this.chamado.setor,
-          severidade: this.chamado.severidade,
           responsavel: this.chamado.responsavel,
           usuarioResponsavelId: this.chamado.usuarioResponsavelId ?? null,
           data: this.chamado.data,
@@ -93,7 +107,7 @@ export class ChamadoDetailComponent {
         title: this.modo === 'criar' ? 'Chamado criado!' : 'Chamado atualizado!',
         text: `${chamado.id} foi salvo com sucesso.`,
         confirmButtonColor: '#244b82'
-      }).then(() => this.router.navigate(['/navbar/chamados', chamado.id]));
+      }).then(() => this.router.navigate(['/navbar/chamados']));
     }, (erro) => {
       this.salvando = false;
       console.error('[ChamadoDetail] Erro ao salvar chamado:', erro);
@@ -106,6 +120,35 @@ export class ChamadoDetailComponent {
     this.router.navigate(['/navbar/chamados']);
   }
 
+  excluir(): void {
+    if (!this.chamado || this.modo !== 'editar' || this.salvando) return;
+
+    void Swal.fire({
+      icon: 'warning',
+      title: 'Excluir chamado?',
+      text: `O chamado ${this.chamado.id} será removido.`,
+      showCancelButton: true,
+      confirmButtonText: 'Excluir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#e53517'
+    }).then((resultado) => {
+      if (!resultado.isConfirmed || !this.chamado) return;
+
+      this.salvando = true;
+      this.chamadoService.excluirChamado(this.chamado.id).subscribe({
+        next: () => {
+          this.salvando = false;
+          void Swal.fire({ icon: 'success', title: 'Chamado excluído!', confirmButtonColor: '#007bc2' })
+            .then(() => this.router.navigate(['/navbar/chamados']));
+        },
+        error: () => {
+          this.salvando = false;
+          void Swal.fire({ icon: 'error', title: 'Erro ao excluir', text: 'Não foi possível excluir o chamado.' });
+        }
+      });
+    });
+  }
+
   onResponsavelChange(): void {
     if (!this.chamado) {
       return;
@@ -113,6 +156,12 @@ export class ChamadoDetailComponent {
 
     const responsavel = this.usuariosDisponiveis.find((item) => item.id === this.chamado?.usuarioResponsavelId);
     this.chamado.responsavel = responsavel?.nome ?? '';
+  }
+
+  onSetorChange(): void {
+    if (!this.chamado) return;
+    const setor = this.setores.find((item) => item.id === this.setorSelecionadoId);
+    this.chamado.setor = setor?.nome ?? 'Sem setor';
   }
 
   onPlantonistaChange(): void {
@@ -127,7 +176,7 @@ export class ChamadoDetailComponent {
 
     this.chamado.plantonista = plantonista.nome;
     this.chamado.especialidadeId = plantonista.especialidadeId;
-    this.chamado.especialidade = plantonista.especialidadeNome;
+    this.chamado.especialidade = plantonista.especialidadeNome ?? this.chamado.especialidade;
   }
 
   onEspecialidadeChange(): void {
@@ -164,11 +213,13 @@ export class ChamadoDetailComponent {
     };
   }
 
+  private sincronizarSetorSelecionado(): void {
+    if (!this.chamado) return;
+    this.setorSelecionadoId = this.setores.find((item) => item.nome === this.chamado?.setor)?.id ?? null;
+  }
+
   getStatus(status: string): string {
     return status.toLowerCase().replace(' ', '-');
   }
 
-  getSeriedade(severidade: string): string {
-    return severidade.toLowerCase().replace('í', 'i');
-  }
 }
