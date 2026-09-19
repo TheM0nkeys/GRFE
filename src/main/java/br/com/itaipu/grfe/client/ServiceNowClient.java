@@ -1,7 +1,8 @@
 package br.com.itaipu.grfe.client;
 
-import br.com.itaipu.grfe.dto.request.ServiceNowIncidentRequest;
-import br.com.itaipu.grfe.dto.response.ServiceNowIncidentResponse;
+
+import br.com.itaipu.grfe.client.dtoservicenow.ServiceNowIncidentPayload;
+import br.com.itaipu.grfe.client.dtoservicenow.ServiceNowIncidentRaw;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 public interface ServiceNowClient {
 
     @PostMapping("/api/now/table/incident")
-    ServiceNowIncidentResponse criarIncidente(
-            @RequestBody ServiceNowIncidentRequest request
+    ServiceNowIncidentRaw criarIncidente(
+            @RequestBody ServiceNowIncidentPayload payload
     );
 
     @PatchMapping("/api/now/table/incident/{sysId}")
-    ServiceNowIncidentResponse atualizarIncidente(
+    ServiceNowIncidentRaw atualizarIncidente(
             @PathVariable("sysId") String sysId,
-            @RequestBody ServiceNowIncidentRequest request
+            @RequestBody ServiceNowIncidentPayload payload
     );
 }
