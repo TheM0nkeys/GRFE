@@ -9,12 +9,20 @@ export class RelatorioService {
 
   obterDados(): Observable<RelatorioDados> {
     return this.chamadoService.obterChamados().pipe(map((chamados) => {
+
+      const dataLimite = new Date();
+      dataLimite.setMonth(dataLimite.getMonth() - 3);
+
+      const chamadosUltimos3Meses = chamados.filter(c => new Date(`${c.data}T00:00:00`) >= dataLimite);
+
       const total = chamados.length;
       const resolvidos = chamados.filter((chamado) => chamado.status === 'Resolvido').length;
-      const porSetor = this.contar(chamados.map((chamado) => chamado.setor || 'Sem setor'));
-      const setorCritico = [...porSetor.entries()].sort((a, b) => b[1] - a[1])[0];
+      const porSetorGlobal = this.contar(chamados.map((chamado) => chamado.setor || 'Sem setor'));
+      const setorCritico = [...porSetorGlobal.entries()].sort((a, b) => b[1] - a[1])[0];
       const meses = [...new Set(chamados.map((chamado) => chamado.data.slice(0, 7)))].sort();
       const labels = meses.length ? meses : [this.mesAtual()];
+
+      const porSetorRecente = this.contar(chamadosUltimos3Meses.map((chamado) => chamado.setor || 'Sem setor'));
 
       return {
         kpis: [
@@ -29,10 +37,11 @@ export class RelatorioService {
           resolvidos: labels.map((mes) => chamados.filter((chamado) => chamado.data.startsWith(mes) && chamado.status === 'Resolvido').length),
           total: labels.map((mes) => chamados.filter((chamado) => chamado.data.startsWith(mes)).length)
         },
-        incidentesPorSemana: this.agruparPorSemana(chamados),
+
+        incidentesPorSemana: this.agruparPorSemana(chamadosUltimos3Meses),
         incidentesPorSetor: {
-          labels: [...porSetor.keys()],
-          datasets: [{ label: 'Incidentes', data: [...porSetor.values()], backgroundColor: '#244b82' }]
+          labels: [...porSetorRecente.keys()],
+          datasets: [{ label: 'Incidentes', data: [...porSetorRecente.values()], backgroundColor: '#244b82' }]
         },
         sobreaviso: []
       };
