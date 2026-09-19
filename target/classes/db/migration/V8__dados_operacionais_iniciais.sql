@@ -1,4 +1,4 @@
--- Dados operacionais iniciais para demonstração do sistema
+/*-- Dados operacionais iniciais para demonstração do sistema
 
 -- ESCALA
 INSERT INTO escala (
@@ -85,3 +85,5 @@ WHERE c.numero_incidente = 'INC-001'
       AND h.comentario =
           'Chamado aberto e encaminhado para o plantonista.'
 );
+
+ */

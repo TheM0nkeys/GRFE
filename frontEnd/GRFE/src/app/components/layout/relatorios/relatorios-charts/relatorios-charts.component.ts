@@ -21,7 +21,10 @@ export class RelatoriosChartsComponent implements AfterViewInit, OnDestroy {
   dados?: RelatorioDados;
   carregando = true;
   erro = false;
-  periodoSelecionado = 12;
+
+  // VALOR INICIAL ALTERADO DE 12 PARA 3 AQUI:
+  periodoSelecionado = 3;
+
   readonly periodos = [
     { valor: 3, label: 'Últimos 3 meses' },
     { valor: 6, label: 'Últimos 6 meses' },
