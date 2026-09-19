@@ -1,4 +1,4 @@
--- Divisão
+/*-- Divisão
 INSERT INTO divisao (id, nome)
 SELECT nextval('divisao_seq'), 'Divisão de Tecnologia'
     WHERE NOT EXISTS (
@@ -125,3 +125,5 @@ WHERE f.matricula = '100002'
     WHERE fe.funcionario_id = f.id
       AND fe.especialidade_id = e.id
 );
+
+ */

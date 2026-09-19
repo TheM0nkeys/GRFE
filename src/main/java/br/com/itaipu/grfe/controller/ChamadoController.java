@@ -30,7 +30,12 @@ public class ChamadoController {
         this.chamadoService = chamadoService;
         this.historicoAcionamentoService = historicoAcionamentoService;
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<ChamadoResponse> buscarPorId(
+            @PathVariable Long id
+    ) {
+        return  ResponseEntity.ok(chamadoService.buscarPorId(id));
+    }
     @PatchMapping("/{id}/status")
     public ResponseEntity<ChamadoResponse> atualizarStatus(
             @PathVariable Long id,
