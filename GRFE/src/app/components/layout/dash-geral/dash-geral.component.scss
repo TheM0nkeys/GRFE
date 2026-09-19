@@ -1,6 +1,6 @@
 :host { display: block; }
 
-.dashboard { min-height: calc(100vh - 60px); padding: 28px 30px 42px; background: linear-gradient(135deg, var(--surface) 0%, #f7fafb 62%, var(--itaipu-sky) 150%); color: #10233d; font-family: 'Trebuchet MS', sans-serif; }
+.dashboard { min-height: calc(100vh - 60px); padding: 28px 30px 42px; font-family: 'Trebuchet MS', sans-serif; background: transparent; }
 .dashboard-header, .panel-heading, .shift-grid, .incident-row, .sector-content { display: flex; align-items: center; }
 .dashboard-header { justify-content: space-between; margin-bottom: 26px; }
 .eyebrow, .kpi-card span, .shift-label { margin: 0 0 6px; color: #6e87a7; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; }

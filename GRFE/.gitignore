@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ==========================================
 # VS Code
 # ==========================================
@@ -29,11 +28,7 @@ out/
 .project
 .settings/
 
-# ==========================================
-# Node.js / TypeScript / Angular
-# ==========================================
-# Dependências (MUITO IMPORTANTE: nunca suba essa pasta)
-node_modules/
+
 
 # Arquivos de build do Angular
 dist/
@@ -54,13 +49,11 @@ logs/
 # ==========================================
 .DS_Store
 Thumbs.db
-.env
 /tsconfig.app.json
 /tsconfig.spec.json
 /tsconfig.json
 /package.json
 /angular.json
-=======
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
@@ -104,4 +97,3 @@ testem.log
 .DS_Store
 Thumbs.db
 .env
->>>>>>> master

@@ -1,6 +1,6 @@
 <main class="admin-page">
   <header class="page-header">
-    <div><span class="eyebrow">CONTROLE OPERACIONAL</span><h1>Gerenciador administrativo</h1></div>
+    <div><span class="eyebrow">CONTROLE OPERACIONAL</span><h1>Gerenciador Administrativo</h1></div>
     <button type="button" class="refresh-button" (click)="carregarTudo()" [disabled]="carregando" aria-label="Atualizar dados">Atualizar</button>
   </header>
 
@@ -14,7 +14,7 @@
 
   <section class="workspace">
     <form class="editor" (ngSubmit)="salvar()">
-      <div><span class="eyebrow">{{ editandoId === null ? 'NOVO CADASTRO' : 'EDIÇÃO' }}</span><h2>{{ editandoId === null ? 'Adicionar' : 'Editar' }} {{ aba.slice(0, -1) }}</h2></div>
+      <div><span class="eyebrow">{{ editandoId === null ? 'NOVO CADASTRO' : 'EDIÇÃO' }}</span><h2>{{ editandoId === null ? 'Adicionar' : 'Editar' }} {{ { divisoes: 'divisão', setores: 'setor', especialidades: 'especialidade', escalas: 'escala' }[aba] }}</h2></div>
       <ng-container *ngIf="aba !== 'escalas'">
         <label>Nome<input name="nome" [(ngModel)]="nome" required></label>
         <label *ngIf="aba === 'especialidades'">Descrição<textarea name="descricao" [(ngModel)]="descricao" rows="3"></textarea></label>
@@ -38,7 +38,7 @@
     </form>
 
     <section class="records">
-      <div class="records-header"><div><span class="eyebrow">DADOS DO BACKEND</span><h2>{{ aba | titlecase }}</h2></div><span class="count">{{ aba === 'divisoes' ? divisoes.length : aba === 'setores' ? setores.length : aba === 'especialidades' ? especialidades.length : escalas.length }} registros</span></div>
+      <div class="records-header"><div><span class="eyebrow">DADOS DO BACKEND</span><h2>{{ { divisoes: 'Divisões', setores: 'Setores', especialidades: 'Especialidades', escalas: 'Escalas' }[aba] }}</h2></div><span class="count">{{ aba === 'divisoes' ? divisoes.length : aba === 'setores' ? setores.length : aba === 'especialidades' ? especialidades.length : escalas.length }} registros</span></div>
       <div class="empty" *ngIf="!carregando && ((aba === 'divisoes' && !divisoes.length) || (aba === 'setores' && !setores.length) || (aba === 'especialidades' && !especialidades.length) || (aba === 'escalas' && !escalas.length))">Nenhum registro retornado pelo backend.</div>
       <ng-container *ngIf="aba === 'divisoes'"><div class="record" *ngFor="let item of divisoes"><div><strong>{{ item.nome }}</strong></div><div class="record-actions"><button type="button" (click)="editar(item)">Editar</button><button type="button" class="danger" (click)="excluir(item)">Excluir</button></div></div></ng-container>
       <ng-container *ngIf="aba === 'escalas'">
