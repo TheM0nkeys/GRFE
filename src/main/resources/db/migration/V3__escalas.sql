@@ -4,20 +4,21 @@ CREATE SEQUENCE escala_seq
 
 
 CREATE TABLE escala (
-                        id BIGINT NOT NULL,
-                        data_hora_inicio TIMESTAMP NOT NULL,
-                        data_hora_fim TIMESTAMP NOT NULL,
-                        especialidade_id BIGINT NOT NULL,
-                        funcionario_id BIGINT NOT NULL,
 
-                        CONSTRAINT pk_escala
-                            PRIMARY KEY (id),
+    id BIGINT NOT NULL,
+    data_hora_inicio TIMESTAMP NOT NULL,
+    data_hora_fim TIMESTAMP NOT NULL,
+    especialidade_id BIGINT NOT NULL,
+    funcionario_id BIGINT NOT NULL,
 
-                        CONSTRAINT fk_escala_especialidade
-                            FOREIGN KEY (especialidade_id)
-                                REFERENCES especialidades (id),
+    CONSTRAINT pk_escala
+    PRIMARY KEY (id),
 
-                        CONSTRAINT fk_escala_funcionario
-                            FOREIGN KEY (funcionario_id)
-                                REFERENCES funcionario (id)
+    CONSTRAINT fk_escala_especialidade
+    FOREIGN KEY (especialidade_id)
+    REFERENCES especialidades (id),
+
+    CONSTRAINT fk_escala_funcionario
+    FOREIGN KEY (funcionario_id)
+    REFERENCES funcionario (id)
 );
