@@ -4,17 +4,17 @@ import br.com.itaipu.grfe.dto.request.ChamadoRequest;
 import br.com.itaipu.grfe.dto.request.HistoricoAcionamentoRequest;
 import br.com.itaipu.grfe.dto.response.ChamadoResponse;
 import br.com.itaipu.grfe.dto.response.HistoricoAcionamentoResponse;
+import br.com.itaipu.grfe.entity.enums.StatusChamado;
 import br.com.itaipu.grfe.service.ChamadoService;
 import br.com.itaipu.grfe.service.HistoricoAcionamentoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import br.com.itaipu.grfe.entity.enums.StatusChamado;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Chamados (Acionamentos)", description = "Registro e acompanhamento de acionamentos de sobreaviso")
@@ -30,12 +30,14 @@ public class ChamadoController {
         this.chamadoService = chamadoService;
         this.historicoAcionamentoService = historicoAcionamentoService;
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ChamadoResponse> buscarPorId(
             @PathVariable Long id
     ) {
         return  ResponseEntity.ok(chamadoService.buscarPorId(id));
     }
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<ChamadoResponse> atualizarStatus(
             @PathVariable Long id,
@@ -47,14 +49,17 @@ public class ChamadoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ChamadoResponse>> listarTodos(
-            @RequestParam(required = false) StatusChamado status) {
-
-        if (status != null) {
-            return ResponseEntity.ok(chamadoService.listarPorStatus(status));
-        }
-
-        return ResponseEntity.ok(chamadoService.listarTodos());
+    public ResponseEntity<List<ChamadoResponse>> listar(
+            @RequestParam(required = false) StatusChamado status,
+            @RequestParam(required = false) Long especialidadeId,
+            @RequestParam(required = false) Long plantonistaId,
+            @RequestParam(required = false) Long divisaoId,
+            @RequestParam(required = false) Long departamentoId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataFim
+    ) {
+        return ResponseEntity.ok(chamadoService.listar(
+                status, especialidadeId, plantonistaId, divisaoId, departamentoId, dataInicio, dataFim));
     }
 
     @PostMapping

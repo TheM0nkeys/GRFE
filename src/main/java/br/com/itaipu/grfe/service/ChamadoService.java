@@ -10,11 +10,13 @@ import br.com.itaipu.grfe.exception.EntidadeNaoEncontradaException;
 import br.com.itaipu.grfe.repository.ChamadoRepository;
 import br.com.itaipu.grfe.repository.EspecialidadesRepository;
 import br.com.itaipu.grfe.repository.FuncionarioRepository;
+import br.com.itaipu.grfe.specification.ChamadoSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,16 +37,21 @@ public class ChamadoService {
         this.funcionarioRepository = funcionarioRepository;
     }
 
-    public List<ChamadoResponse> listarTodos() {
-        return chamadoRepository.findAll()
-                .stream()
-                .map(ChamadoResponse::fromEntity)
-                .toList();
-    }
+    public List<ChamadoResponse> listar(StatusChamado status,
+                                        Long especialidadeId,
+                                        Long plantonistaId,
+                                        Long divisaoId,
+                                        Long departamentoId,
+                                        LocalDateTime dataInicio,
+                                        LocalDateTime dataFim) {
+        log.info("Listando acionamentos com filtros: status={}, especialidadeId={}, plantonistaId={}, " +
+                        "divisaoId={}, departamentoId={}, dataInicio={}, dataFim={}",
+                status, especialidadeId, plantonistaId, divisaoId, departamentoId, dataInicio, dataFim);
 
-    public List<ChamadoResponse> listarPorStatus(StatusChamado status) {
-        log.info("Listando acionamentos filtrados por status={}", status);
-        return chamadoRepository.findByStatus(status)
+        var filtro = ChamadoSpecification.comFiltros(
+                status, especialidadeId, plantonistaId, divisaoId, departamentoId, dataInicio, dataFim);
+
+        return chamadoRepository.findAll(filtro)
                 .stream()
                 .map(ChamadoResponse::fromEntity)
                 .toList();
